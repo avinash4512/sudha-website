@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Upload Media – Admin</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-<script src="../firebase-config.js"></script>
 <style>
   .drop-zone{border:2px dashed #334155;border-radius:14px;padding:60px 24px;text-align:center;cursor:pointer;transition:.2s;background:#1e293b;margin-bottom:24px}
   .drop-zone.dragover{border-color:#6366f1;background:#6366f122}
@@ -34,6 +30,22 @@
   .note-del{color:#f87171;background:none;border:none;cursor:pointer;font-size:14px;flex-shrink:0}
   .loading{color:#64748b;font-size:14px;padding:20px 0}
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA12PmJh2DGgujscaZrYmCUAepcqK5P6Bk",
+  authDomain: "sudha-lic-website.firebaseapp.com",
+  projectId: "sudha-lic-website",
+  storageBucket: "sudha-lic-website.firebasestorage.app",
+  messagingSenderId: "236994886282",
+  appId: "1:236994886282:web:7072b506e8c739430fcb73"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+</script>
 </head>
 <body>
 <div class="admin-layout">
