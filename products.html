@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products & Services – YourBrand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0a0f1e;--surface:#111827;--card:#1a2235;--border:#1e2d45;--accent:#6366f1;--accent2:#f59e0b;--text:#e2e8f0;--muted:#64748b}
+  body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif}
+  a{text-decoration:none;color:inherit}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+  .nav-logo{font-size:20px;font-weight:800;color:var(--accent)}
+  .nav-links a{color:var(--muted);margin-left:24px;font-size:14px}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links .admin-link{background:var(--accent);color:#fff;padding:7px 16px;border-radius:8px;font-size:13px}
+  .hero{text-align:center;padding:60px 24px 40px}
+  .hero h1{font-size:clamp(28px,5vw,48px);font-weight:800;margin-bottom:12px}
+  .hero h1 span{color:var(--accent)}
+  .hero p{color:var(--muted);font-size:16px}
+  .container{max-width:1100px;margin:0 auto;padding:0 20px 80px}
+  .filter-bar{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;justify-content:center}
+  .filter-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:24px;padding:8px 20px;font-size:14px;cursor:pointer;font-family:'Sora',sans-serif;transition:.2s}
+  .filter-btn.active,.filter-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+  .product-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:.25s}
+  .product-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 16px 40px rgba(99,102,241,.2)}
+  .card-image{height:180px;background:#0f172a;display:flex;align-items:center;justify-content:center;font-size:48px;overflow:hidden;position:relative}
+  .card-image img{width:100%;height:100%;object-fit:cover}
+  .card-badge{position:absolute;top:12px;left:12px;background:#0a0f1ecc;border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--text)}
+  .card-status{position:absolute;top:12px;right:12px;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
+  .card-status.available{background:#14532d22;color:#4ade80;border:1px solid #14532d}
+  .card-status.soldout{background:#7f1d1d22;color:#f87171;border:1px solid #7f1d1d}
+  .card-status.coming{background:#78350f22;color:#fbbf24;border:1px solid #78350f}
+  .card-body{padding:18px}
+  .card-title{font-size:17px;font-weight:700;margin-bottom:6px}
+  .card-price{font-size:22px;font-weight:800;color:var(--accent);margin-bottom:8px}
+  .card-price .original{color:var(--muted);font-size:14px;font-weight:400;text-decoration:line-through;margin-left:8px}
+  .card-desc{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:10px}
+  .features-list{list-style:none}
+  .features-list li{font-size:12px;color:#94a3b8;padding:2px 0}
+  .features-list li::before{content:'✓ ';color:#4ade80}
+  .loading,.no-items{text-align:center;padding:80px;color:var(--muted);grid-column:1/-1}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">🌟 YourBrand</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="admin/login.html" class="admin-link">⚙️ Admin</a>
+  </div>
+</nav>
+<div class="hero">
+  <h1>Our <span>Products</span> & Services</h1>
+  <p>Everything we offer — all in one place</p>
+</div>
+<div class="container">
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterItems('all',this)">🔍 All</button>
+    <button class="filter-btn" onclick="filterItems('product',this)">🛍️ Products</button>
+    <button class="filter-btn" onclick="filterItems('service',this)">🔧 Services</button>
+    <button class="filter-btn" onclick="filterItems('offer',this)">🎁 Special Offers</button>
+  </div>
+  <div class="products-grid" id="products-grid"><p class="loading">⏳ Loading...</p></div>
+</div>
+
+<script>
+let allItems=[];
+const catIcon={product:'🛍️',service:'🔧',offer:'🎁'};
+const statusLabel={available:'✅ Available',soldout:'❌ Sold Out',coming:'🔜 Coming Soon'};
+
+db.collection('products').orderBy('date','desc').get().then(snap=>{
+  allItems=snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderItems('all');
+}).catch(()=>document.getElementById('products-grid').innerHTML='<p class="loading">Could not load products.</p>');
+
+function filterItems(type,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderItems(type);
+}
+
+function renderItems(filter){
+  const items=filter==='all'?allItems:allItems.filter(p=>p.category===filter);
+  const grid=document.getElementById('products-grid');
+  if(!items.length){grid.innerHTML='<div class="no-items"><div style="font-size:48px;margin-bottom:12px">📦</div><p>No items available yet.</p></div>';return;}
+  grid.innerHTML=items.map(item=>`<div class="product-card">
+    <div class="card-image">
+      ${item.image?`<img src="${item.image}" alt="${item.name}">`:(catIcon[item.category]||'📦')}
+      <span class="card-badge">${catIcon[item.category]||''} ${(item.category||'').charAt(0).toUpperCase()+(item.category||'').slice(1)}</span>
+      <span class="card-status ${item.status}">${statusLabel[item.status]||''}</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">${item.name}</div>
+      <div class="card-price">${item.price?`₹${item.price}`:'Contact Us'}
+        ${item.originalPrice?`<span class="original">₹${item.originalPrice}</span>`:''}
+      </div>
+      ${item.description?`<div class="card-desc">${item.description.substring(0,100)}${item.description.length>100?'...':''}</div>`:''}
+      ${item.features?`<ul class="features-list">${item.features.split('\n').filter(f=>f.trim()).slice(0,3).map(f=>`<li>${f.trim()}</li>`).join('')}</ul>`:''}
+    </div>
+  </div>`).join('');
+}
+</script>
+</body>
+</html>

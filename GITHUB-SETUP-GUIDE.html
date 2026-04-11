@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Setup Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0a0f1e;--surface:#111827;--card:#1a2235;--border:#1e2d45;--accent:#6366f1;--green:#22c55e;--text:#e2e8f0;--muted:#64748b}
+  body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;padding:32px 20px;max-width:820px;margin:0 auto}
+  h1{font-size:28px;font-weight:800;margin-bottom:6px;color:var(--accent)}
+  .subtitle{color:var(--muted);font-size:15px;margin-bottom:36px}
+  .phase{margin-bottom:36px}
+  .phase-title{font-size:19px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .phase-title .num{background:var(--accent);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+  .step{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;transition:.2s;cursor:pointer}
+  .step:hover{border-color:var(--accent)}
+  .step.done{border-color:var(--green);background:#14532d11}
+  .checkbox{width:22px;height:22px;border:2px solid var(--border);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:2px;transition:.2s}
+  .step.done .checkbox{background:var(--green);border-color:var(--green)}
+  .step-body{flex:1}
+  .step-title{font-size:15px;font-weight:700;margin-bottom:4px}
+  .step.done .step-title{text-decoration:line-through;color:var(--muted)}
+  .step-desc{font-size:13px;color:var(--muted);line-height:1.6}
+  .step-desc a{color:var(--accent);text-decoration:none}
+  .step-desc a:hover{text-decoration:underline}
+  .code-box{background:#0f172a;border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:13px;font-family:monospace;color:#94a3b8;margin-top:8px;white-space:pre-wrap;word-break:break-all}
+  .tip{background:#78350f22;border:1px solid #78350f;border-radius:8px;padding:12px 16px;font-size:13px;color:#fbbf24;margin-top:8px}
+  .success-banner{background:#14532d22;border:1px solid #14532d;border-radius:12px;padding:20px;text-align:center;margin-top:32px;display:none}
+  .success-banner h2{color:#4ade80;font-size:22px;margin-bottom:8px}
+  .success-banner p{color:#94a3b8;font-size:14px}
+  .progress-bar-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:28px}
+  .progress-label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px}
+  .progress-track{background:#0f172a;height:10px;border-radius:5px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:5px;transition:.4s;width:0%}
+  .reset-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;margin-top:16px;font-family:'Sora',sans-serif}
+  .reset-btn:hover{color:var(--text);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<h1>🚀 GitHub Pages Setup Guide</h1>
+<p class="subtitle">Follow these steps one by one. Click each step when done to track your progress.</p>
+
+<div class="progress-bar-wrap">
+  <div class="progress-label"><span>⏳ Your Progress</span><span id="progress-text">0 / 18 steps done</span></div>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+</div>
+
+<!-- PHASE 1: FIREBASE -->
+<div class="phase">
+  <div class="phase-title"><span class="num">1</span>🔥 Setup Firebase (Database)</div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Open Firebase Console</div>
+      <div class="step-desc">Go to 👉 <a href="https://console.firebase.google.com" target="_blank">https://console.firebase.google.com</a><br>Sign in with your Google account.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Create a New Project</div>
+      <div class="step-desc">Click <strong>"Add project"</strong> → Type any name like <code>sudha-lic-website</code> → Click Continue → Click <strong>Create project</strong> → Click Continue</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Register a Web App</div>
+      <div class="step-desc">On your project home page, click the <strong>&lt;/&gt;</strong> icon → Type nickname <code>my-website</code> → Click <strong>Register app</strong></div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Copy your Firebase Config</div>
+      <div class="step-desc">You will see a box with code. Copy the entire <strong>firebaseConfig</strong> object — it has apiKey, authDomain, projectId etc.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Paste Config into firebase-config.js</div>
+      <div class="step-desc">Open your <code>firebase-config.js</code> file in Notepad. Replace the placeholder values with your real values. Save the file.
+        <div class="code-box">apiKey: "AIzaSy...",
+authDomain: "your-project.firebaseapp.com",
+projectId: "your-project",
+storageBucket: "your-project.appspot.com",
+messagingSenderId: "123456789",
+appId: "1:123456789:web:abc"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Enable Firestore Database</div>
+      <div class="step-desc">In Firebase Console → left menu → <strong>Firestore Database</strong> → Click <strong>Create database</strong> → Choose <strong>"Start in test mode"</strong> → Click Next → Click <strong>Enable</strong></div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Enable Firebase Storage</div>
+      <div class="step-desc">In Firebase Console → left menu → <strong>Storage</strong> → Click <strong>Get started</strong> → Choose <strong>"Start in test mode"</strong> → Click <strong>Done</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2: GITHUB ACCOUNT -->
+<div class="phase">
+  <div class="phase-title"><span class="num">2</span>🐙 Create GitHub Account</div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Go to GitHub and Sign Up</div>
+      <div class="step-desc">Open 👉 <a href="https://github.com" target="_blank">https://github.com</a> → Click <strong>"Sign up"</strong> → Enter your email, password, username → Verify your email</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Sign In to GitHub</div>
+      <div class="step-desc">After creating account, click <strong>"Sign in"</strong> and enter your email and password.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 3: CREATE REPOSITORY -->
+<div class="phase">
+  <div class="phase-title"><span class="num">3</span>📁 Create a Repository</div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Click "New Repository"</div>
+      <div class="step-desc">On GitHub home page, click the green <strong>"New"</strong> button on the left side, OR click the <strong>"+"</strong> icon at top right → <strong>"New repository"</strong></div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Fill in Repository Details</div>
+      <div class="step-desc">
+        • <strong>Repository name:</strong> type <code>cms-website</code><br>
+        • <strong>Description:</strong> type anything like "My CMS Website"<br>
+        • Select <strong>Public</strong> (important! Private won't work with free Pages)<br>
+        • Leave everything else as default<br>
+        • Click <strong>"Create repository"</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 4: UPLOAD FILES -->
+<div class="phase">
+  <div class="phase-title"><span class="num">4</span>📤 Upload Your Files</div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Click "uploading an existing file"</div>
+      <div class="step-desc">After creating the repository, you will see a page that says "Quick setup". Look for the link that says <strong>"uploading an existing file"</strong> and click it.</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Upload ALL files from cms-website folder</div>
+      <div class="step-desc">
+        Drag and drop these files into the upload box:<br><br>
+        ✅ <code>index.html</code><br>
+        ✅ <code>products.html</code><br>
+        ✅ <code>reviews.html</code><br>
+        ✅ <code>firebase-config.js</code> (with your config filled in!)<br>
+        ✅ <code>README.md</code><br>
+        ✅ <code>404.html</code>
+        <div class="tip">⚠️ You cannot drag the "admin" folder directly. You need to upload admin files separately — see next step.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Commit (save) the files</div>
+      <div class="step-desc">Scroll down on the upload page → You will see <strong>"Commit changes"</strong> section → Leave the message as default → Click the green <strong>"Commit changes"</strong> button</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Upload the admin folder files</div>
+      <div class="step-desc">
+        In your repository, click <strong>"Add file"</strong> → <strong>"Upload files"</strong><br><br>
+        Open your <code>admin</code> folder on your computer. Drag ALL these files into the upload box:<br><br>
+        ✅ <code>login.html</code><br>
+        ✅ <code>dashboard.html</code><br>
+        ✅ <code>upload.html</code><br>
+        ✅ <code>news-manager.html</code><br>
+        ✅ <code>schemes-manager.html</code><br>
+        ✅ <code>products-manager.html</code><br>
+        ✅ <code>reviews-manager.html</code><br>
+        ✅ <code>style.css</code>
+        <div class="tip">⚠️ Important: After uploading, GitHub will put them in the ROOT folder. You need to move them into an "admin" subfolder. See next step.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">✅ EASIER METHOD — Use GitHub Desktop App</div>
+      <div class="step-desc">
+        Instead of uploading files one by one, use <strong>GitHub Desktop</strong> — it uploads folders properly!<br><br>
+        1. Download: <a href="https://desktop.github.com" target="_blank">https://desktop.github.com</a><br>
+        2. Install and sign in with your GitHub account<br>
+        3. Click <strong>"Clone a repository"</strong> → select your <code>cms-website</code> repo → choose a folder on your PC<br>
+        4. Copy all your <code>cms-website</code> files into that folder<br>
+        5. In GitHub Desktop → you will see all files listed → type a message like "Upload all files" → Click <strong>"Commit to main"</strong> → Click <strong>"Push origin"</strong><br>
+        6. Done! All files including the admin folder will be uploaded correctly!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 5: ENABLE PAGES -->
+<div class="phase">
+  <div class="phase-title"><span class="num">5</span>🌍 Enable GitHub Pages (Make it Live!)</div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Go to Repository Settings</div>
+      <div class="step-desc">In your repository page, click the <strong>"Settings"</strong> tab at the top (it has a gear icon ⚙️)</div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Find the Pages section</div>
+      <div class="step-desc">In Settings, scroll down on the left sidebar and click <strong>"Pages"</strong></div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">Set Source to main branch</div>
+      <div class="step-desc">Under <strong>"Branch"</strong> section → click the dropdown that says "None" → select <strong>"main"</strong> → make sure folder is set to <strong>"/ (root)"</strong> → Click <strong>"Save"</strong></div>
+    </div>
+  </div>
+
+  <div class="step" onclick="toggle(this)">
+    <div class="checkbox">✓</div>
+    <div class="step-body">
+      <div class="step-title">🎉 Your website is LIVE!</div>
+      <div class="step-desc">
+        Wait 2-3 minutes → Refresh the Settings → Pages page<br><br>
+        You will see a green box saying:<br>
+        <strong>"Your site is live at https://YOUR-USERNAME.github.io/cms-website"</strong><br><br>
+        Click that link — your website is now live on the internet! 🎉
+        <div class="code-box">Your URL will be:
+https://YOUR-GITHUB-USERNAME.github.io/cms-website</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="success-banner" id="success-banner">
+  <h2>🎉 All Steps Complete!</h2>
+  <p>Your website should now be live on GitHub Pages! Share your URL with everyone.</p>
+</div>
+
+<br>
+<button class="reset-btn" onclick="resetAll()">🔄 Reset Checklist</button>
+
+<script>
+const TOTAL = document.querySelectorAll('.step').length;
+
+function toggle(el){
+  el.classList.toggle('done');
+  updateProgress();
+}
+
+function updateProgress(){
+  const done = document.querySelectorAll('.step.done').length;
+  document.getElementById('progress-text').textContent = done + ' / ' + TOTAL + ' steps done';
+  document.getElementById('progress-fill').style.width = (done/TOTAL*100) + '%';
+  document.getElementById('success-banner').style.display = done === TOTAL ? 'block' : 'none';
+  // Save progress
+  const states = Array.from(document.querySelectorAll('.step')).map(s=>s.classList.contains('done'));
+  localStorage.setItem('github_guide_progress', JSON.stringify(states));
+}
+
+function resetAll(){
+  if(!confirm('Reset all progress?')) return;
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('done'));
+  localStorage.removeItem('github_guide_progress');
+  updateProgress();
+}
+
+// Restore saved progress
+const saved = JSON.parse(localStorage.getItem('github_guide_progress')||'[]');
+document.querySelectorAll('.step').forEach((s,i)=>{ if(saved[i]) s.classList.add('done'); });
+updateProgress();
+</script>
+</body>
+</html>

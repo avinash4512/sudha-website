@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reviews – YourBrand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0a0f1e;--surface:#111827;--card:#1a2235;--border:#1e2d45;--accent:#6366f1;--accent2:#f59e0b;--text:#e2e8f0;--muted:#64748b}
+  body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;min-height:100vh}
+  a{text-decoration:none;color:inherit}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+  .nav-logo{font-size:20px;font-weight:800;color:var(--accent)}
+  .nav-links a{color:var(--muted);margin-left:24px;font-size:14px}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links .admin-link{background:var(--accent);color:#fff;padding:7px 16px;border-radius:8px;font-size:13px}
+  .hero{text-align:center;padding:60px 24px 40px}
+  .hero h1{font-size:clamp(28px,5vw,48px);font-weight:800;margin-bottom:12px}
+  .hero h1 span{color:var(--accent2)}
+  .hero p{color:var(--muted);font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:0 20px 80px}
+  .review-form-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:48px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .review-form-card h2{font-size:20px;font-weight:800;margin-bottom:24px}
+  .form-group{margin-bottom:18px}
+  .form-group label{display:block;font-size:13px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .form-group input,.form-group select,.form-group textarea{width:100%;background:#0f172a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:12px 16px;font-size:15px;font-family:'Sora',sans-serif;outline:none;transition:.2s}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+  .form-group textarea{min-height:100px;resize:vertical}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+  .star-rating{display:flex;gap:8px;margin-top:6px}
+  .star-btn{font-size:32px;cursor:pointer;color:#334155;transition:.15s;background:none;border:none;padding:0;line-height:1}
+  .star-btn.active,.star-btn:hover{color:var(--accent2);transform:scale(1.15)}
+  .star-label{color:var(--muted);font-size:13px;margin-top:8px}
+  .submit-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;transition:.2s;margin-top:8px}
+  .submit-btn:hover{background:#4f46e5;transform:translateY(-1px)}
+  .submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+  .success-msg{display:none;background:#14532d22;border:1px solid #14532d;border-radius:10px;padding:16px;text-align:center;color:#4ade80;font-weight:600;margin-top:16px}
+  .rating-summary{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:32px;display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+  .big-rating{text-align:center}
+  .big-number{font-size:56px;font-weight:800;color:var(--accent2);line-height:1}
+  .big-stars{font-size:24px;color:var(--accent2);margin:6px 0}
+  .big-count{font-size:13px;color:var(--muted)}
+  .rating-breakdown{flex:1;min-width:200px}
+  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .bar-row span{font-size:13px;color:var(--muted);width:12px;text-align:right}
+  .bar-track{flex:1;height:8px;background:#1e293b;border-radius:4px;overflow:hidden}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--accent2),#ef4444);border-radius:4px;transition:.5s}
+  .reviews-section h2{font-size:22px;font-weight:800;margin-bottom:20px}
+  .review-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:16px;transition:.2s}
+  .review-card:hover{border-color:var(--accent)}
+  .rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+  .rc-user{display:flex;align-items:center;gap:12px}
+  .rc-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#a855f7);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#fff;flex-shrink:0}
+  .rc-name{font-weight:700;font-size:15px}
+  .rc-service{font-size:12px;color:var(--muted);margin-top:2px}
+  .rc-stars{color:var(--accent2);font-size:20px;letter-spacing:2px}
+  .rc-text{color:#94a3b8;line-height:1.7;font-size:14px;font-style:italic}
+  .rc-date{font-size:11px;color:var(--muted);margin-top:8px}
+  .no-reviews{text-align:center;padding:60px;color:var(--muted)}
+  .loading{text-align:center;padding:40px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">🌟 YourBrand</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="admin/login.html" class="admin-link">⚙️ Admin</a>
+  </div>
+</nav>
+<div class="hero">
+  <h1>Customer <span>Reviews</span></h1>
+  <p>See what our customers say — and share your own experience!</p>
+</div>
+<div class="container">
+  <div class="rating-summary" id="rating-summary"><p class="loading">⏳ Loading ratings...</p></div>
+
+  <div class="review-form-card">
+    <h2>✍️ Write Your Review</h2>
+    <div class="form-row">
+      <div class="form-group"><label>Your Name *</label><input type="text" id="r-name" placeholder="e.g. Rajesh Kumar"></div>
+      <div class="form-group"><label>Service / Product Used</label><input type="text" id="r-service" placeholder="e.g. Web Design..."></div>
+    </div>
+    <div class="form-group">
+      <label>Your Rating *</label>
+      <div class="star-rating" id="star-input">
+        <button class="star-btn" data-val="1" onclick="setRating(1)">★</button>
+        <button class="star-btn" data-val="2" onclick="setRating(2)">★</button>
+        <button class="star-btn" data-val="3" onclick="setRating(3)">★</button>
+        <button class="star-btn" data-val="4" onclick="setRating(4)">★</button>
+        <button class="star-btn" data-val="5" onclick="setRating(5)">★</button>
+      </div>
+      <div class="star-label" id="star-label">Click a star to rate</div>
+    </div>
+    <div class="form-group"><label>Your Review *</label><textarea id="r-text" placeholder="Tell others about your experience..."></textarea></div>
+    <button class="submit-btn" id="submit-btn" onclick="submitReview()">🚀 Submit Review</button>
+    <div class="success-msg" id="success-msg">🎉 Thank you! Your review has been submitted and is awaiting approval.</div>
+  </div>
+
+  <div class="reviews-section">
+    <h2>💬 What People Say</h2>
+    <div id="reviews-list"><p class="loading">⏳ Loading reviews...</p></div>
+  </div>
+</div>
+
+<script>
+let selectedRating=0;
+const ratingLabels=['','Poor 😞','Fair 😐','Good 🙂','Very Good 😊','Excellent 🤩'];
+
+function setRating(val){
+  selectedRating=val;
+  document.querySelectorAll('.star-btn').forEach(btn=>btn.classList.toggle('active',parseInt(btn.dataset.val)<=val));
+  document.getElementById('star-label').textContent=ratingLabels[val];
+}
+
+async function submitReview(){
+  const name=document.getElementById('r-name').value.trim();
+  const text=document.getElementById('r-text').value.trim();
+  if(!name){alert('Please enter your name!');return;}
+  if(!selectedRating){alert('Please select a star rating!');return;}
+  if(!text){alert('Please write your review!');return;}
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true; btn.textContent='Submitting...';
+  try{
+    await db.collection('reviews').add({
+      name,
+      service:document.getElementById('r-service').value.trim(),
+      rating:selectedRating,
+      review:text,
+      status:'pending',
+      date:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById('r-name').value='';
+    document.getElementById('r-service').value='';
+    document.getElementById('r-text').value='';
+    selectedRating=0;
+    document.querySelectorAll('.star-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('star-label').textContent='Click a star to rate';
+    const msg=document.getElementById('success-msg');
+    msg.style.display='block';
+    setTimeout(()=>msg.style.display='none',5000);
+  }catch(e){alert('Error submitting review. Please try again.');}
+  btn.disabled=false; btn.textContent='🚀 Submit Review';
+}
+
+// Load approved reviews & summary
+function loadReviews(){
+  db.collection('reviews').where('status','==','approved').orderBy('date','desc').get().then(snap=>{
+    const reviews=snap.docs.map(d=>({id:d.id,...d.data()}));
+    // Summary
+    const total=reviews.length;
+    const avg=total?(reviews.reduce((s,r)=>s+r.rating,0)/total).toFixed(1):'0.0';
+    const counts=[5,4,3,2,1].map(s=>reviews.filter(r=>r.rating===s).length);
+    const max=Math.max(...counts,1);
+    document.getElementById('rating-summary').innerHTML=`
+      <div class="big-rating">
+        <div class="big-number">${avg}</div>
+        <div class="big-stars">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5-Math.round(avg))}</div>
+        <div class="big-count">${total} verified review${total!==1?'s':''}</div>
+      </div>
+      <div class="rating-breakdown">
+        ${[5,4,3,2,1].map((s,i)=>`<div class="bar-row">
+          <span>${s}</span><span style="color:#f59e0b;font-size:13px">★</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(counts[i]/max*100).toFixed(0)}%"></div></div>
+          <span style="width:22px;font-size:12px">${counts[i]}</span>
+        </div>`).join('')}
+      </div>`;
+    // Reviews list
+    const list=document.getElementById('reviews-list');
+    if(!reviews.length){list.innerHTML='<div class="no-reviews"><div style="font-size:48px;margin-bottom:12px">💬</div><p>No approved reviews yet. Be the first!</p></div>';return;}
+    list.innerHTML=reviews.map(r=>`<div class="review-card">
+      <div class="rc-header">
+        <div class="rc-user">
+          <div class="rc-avatar">${r.name.charAt(0).toUpperCase()}</div>
+          <div><div class="rc-name">${r.name}</div>${r.service?`<div class="rc-service">Used: ${r.service}</div>`:''}</div>
+        </div>
+        <div class="rc-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+      </div>
+      <div class="rc-text">"${r.review}"</div>
+      <div class="rc-date">${r.date?new Date(r.date.toDate()).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):''}</div>
+    </div>`).join('');
+  }).catch(e=>{
+    document.getElementById('reviews-list').innerHTML='<p class="loading">Could not load reviews.</p>';
+    document.getElementById('rating-summary').innerHTML='<p style="color:var(--muted)">Could not load ratings.</p>';
+  });
+}
+loadReviews();
+</script>
+</body>
+</html>
