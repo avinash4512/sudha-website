@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schemes Manager – Admin</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="../firebase-config.js"></script>
+<style>
+  .scheme-form{background:#1e293b;border-radius:12px;padding:24px;margin-bottom:28px}
+  .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .form-group label{font-size:13px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+  .form-group input,.form-group textarea,.form-group select{background:#0f172a;border:1px solid #334155;border-radius:8px;color:#f1f5f9;padding:10px 14px;font-size:14px;outline:none;transition:.2s}
+  .form-group input:focus,.form-group textarea:focus{border-color:#6366f1}
+  .form-group textarea{min-height:80px;resize:vertical}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .schemes-list{display:flex;flex-direction:column;gap:12px}
+  .scheme-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:18px}
+  .sc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px}
+  .sc-title{font-size:15px;font-weight:700}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+  .badge.active{background:#14532d22;color:#4ade80;border:1px solid #14532d}
+  .badge.upcoming{background:#1e40af22;color:#60a5fa;border:1px solid #1e40af}
+  .badge.closed{background:#7f1d1d22;color:#f87171;border:1px solid #7f1d1d}
+  .sc-desc{font-size:13px;color:#64748b;margin-bottom:6px}
+  .sc-meta{font-size:12px;color:#475569;margin-bottom:8px}
+  .sc-actions{display:flex;gap:8px}
+  .btn-edit{background:#1e40af22;color:#60a5fa;border:1px solid #1e40af;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer}
+  .btn-del{background:#7f1d1d22;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer}
+  .loading{color:#64748b;font-size:14px;padding:20px 0}
+</style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">⚙️ AdminPanel</div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="upload.html">📤 Upload Media</a>
+      <a href="news-manager.html">📰 News Posts</a>
+      <a href="schemes-manager.html" class="active">📋 Schemes</a>
+      <a href="products-manager.html">🛍️ Products & Services</a>
+      <a href="reviews-manager.html">⭐ Reviews</a>
+    </nav>
+    <div style="padding:20px;margin-top:auto">
+      <button onclick="logout()" style="width:100%;background:#7f1d1d;color:#fca5a5;border:none;padding:10px;border-radius:8px;cursor:pointer;font-size:14px">🚪 Logout</button>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="page-header">
+      <h1>📋 Schemes Manager</h1>
+      <p>Add and manage schemes — saved to Firebase</p>
+    </div>
+    <div class="scheme-form">
+      <h2 style="color:#f1f5f9;margin-bottom:18px;font-size:17px" id="form-title">➕ Add New Scheme</h2>
+      <input type="hidden" id="edit-id">
+      <div class="form-group"><label>Scheme Name *</label><input type="text" id="s-name" placeholder="e.g. PM Kisan Yojana"></div>
+      <div class="form-group"><label>Description</label><textarea id="s-desc" placeholder="What is this scheme about?"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Who Can Apply</label><input type="text" id="s-eligible" placeholder="e.g. Farmers, Women..."></div>
+        <div class="form-group"><label>Benefit / Amount</label><input type="text" id="s-benefit" placeholder="e.g. ₹6000/year"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Last Date</label><input type="date" id="s-date"></div>
+        <div class="form-group"><label>Status</label>
+          <select id="s-status"><option value="active">✅ Active</option><option value="upcoming">🔜 Upcoming</option><option value="closed">❌ Closed</option></select>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="btn-primary" id="save-btn" onclick="saveScheme()">💾 Save Scheme</button>
+        <button class="btn-secondary" onclick="clearForm()">✖ Cancel</button>
+      </div>
+    </div>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:14px">All Schemes (<span id="scheme-count">0</span>)</h3>
+    <div class="schemes-list" id="schemes-list"><p class="loading">⏳ Loading...</p></div>
+  </main>
+</div>
+<script>
+if(!localStorage.getItem('admin_logged_in')) window.location.href='login.html';
+function logout(){localStorage.removeItem('admin_logged_in');window.location.href='login.html';}
+
+async function saveScheme(){
+  const name=document.getElementById('s-name').value.trim();
+  if(!name){alert('Enter scheme name!');return;}
+  const btn=document.getElementById('save-btn');
+  btn.disabled=true; btn.textContent='Saving...';
+  const editId=document.getElementById('edit-id').value;
+  const data={
+    name,
+    description:document.getElementById('s-desc').value.trim(),
+    eligible:document.getElementById('s-eligible').value.trim(),
+    benefit:document.getElementById('s-benefit').value.trim(),
+    lastDate:document.getElementById('s-date').value,
+    status:document.getElementById('s-status').value,
+    date:firebase.firestore.FieldValue.serverTimestamp()
+  };
+  try{
+    if(editId){ await db.collection('schemes').doc(editId).update(data); }
+    else { await db.collection('schemes').add(data); }
+    clearForm(); loadSchemes();
+  }catch(e){alert('Error: '+e.message);}
+  btn.disabled=false; btn.textContent='💾 Save Scheme';
+}
+
+function clearForm(){
+  document.getElementById('edit-id').value='';
+  ['s-name','s-desc','s-eligible','s-benefit','s-date'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('s-status').value='active';
+  document.getElementById('form-title').textContent='➕ Add New Scheme';
+}
+
+async function editScheme(id){
+  const doc=await db.collection('schemes').doc(id).get();
+  const s=doc.data();
+  document.getElementById('edit-id').value=id;
+  document.getElementById('s-name').value=s.name||'';
+  document.getElementById('s-desc').value=s.description||'';
+  document.getElementById('s-eligible').value=s.eligible||'';
+  document.getElementById('s-benefit').value=s.benefit||'';
+  document.getElementById('s-date').value=s.lastDate||'';
+  document.getElementById('s-status').value=s.status||'active';
+  document.getElementById('form-title').textContent='✏️ Edit Scheme';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function deleteScheme(id){
+  if(!confirm('Delete this scheme?')) return;
+  db.collection('schemes').doc(id).delete().then(loadSchemes);
+}
+
+function loadSchemes(){
+  db.collection('schemes').orderBy('date','desc').get().then(snap=>{
+    document.getElementById('scheme-count').textContent=snap.size;
+    const list=document.getElementById('schemes-list');
+    if(snap.empty){list.innerHTML='<p style="color:#475569;padding:20px">No schemes yet.</p>';return;}
+    list.innerHTML=snap.docs.map(doc=>{const s=doc.data();return`<div class="scheme-card">
+      <div class="sc-header">
+        <div class="sc-title">${s.name}</div>
+        <span class="badge ${s.status}">${s.status==='active'?'✅ Active':s.status==='upcoming'?'🔜 Upcoming':'❌ Closed'}</span>
+      </div>
+      ${s.description?`<div class="sc-desc">${s.description}</div>`:''}
+      <div class="sc-meta">${s.eligible?`👥 ${s.eligible} &nbsp;`:''} ${s.benefit?`💰 ${s.benefit} &nbsp;`:''} ${s.lastDate?`📅 Last date: ${s.lastDate}`:''}</div>
+      <div class="sc-actions">
+        <button class="btn-edit" onclick="editScheme('${doc.id}')">✏️ Edit</button>
+        <button class="btn-del" onclick="deleteScheme('${doc.id}')">🗑️ Delete</button>
+      </div>
+    </div>`;}).join('');
+  }).catch(e=>document.getElementById('schemes-list').innerHTML=`<p style="color:#f87171">Error: ${e.message}</p>`);
+}
+loadSchemes();
+</script>
+</body>
+</html>

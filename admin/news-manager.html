@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News Manager – Admin</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="../firebase-config.js"></script>
+<style>
+  .news-form{background:#1e293b;border-radius:12px;padding:24px;margin-bottom:28px}
+  .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .form-group label{font-size:13px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+  .form-group input,.form-group textarea,.form-group select{background:#0f172a;border:1px solid #334155;border-radius:8px;color:#f1f5f9;padding:10px 14px;font-size:14px;outline:none;transition:.2s}
+  .form-group input:focus,.form-group textarea:focus{border-color:#6366f1}
+  .form-group textarea{min-height:90px;resize:vertical}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .news-list{display:flex;flex-direction:column;gap:12px}
+  .news-item{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:18px;display:flex;gap:14px;align-items:flex-start}
+  .news-item img{width:80px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0}
+  .ni-placeholder{width:80px;height:60px;background:#0f172a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+  .ni-body{flex:1}
+  .ni-title{font-size:15px;font-weight:700;margin-bottom:4px}
+  .ni-summary{font-size:13px;color:#64748b;margin-bottom:8px}
+  .ni-date{font-size:11px;color:#475569}
+  .ni-actions{display:flex;gap:8px;margin-top:8px}
+  .btn-edit{background:#1e40af22;color:#60a5fa;border:1px solid #1e40af;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer}
+  .btn-del{background:#7f1d1d22;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer}
+  .loading{color:#64748b;font-size:14px;padding:20px 0}
+</style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">⚙️ AdminPanel</div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="upload.html">📤 Upload Media</a>
+      <a href="news-manager.html" class="active">📰 News Posts</a>
+      <a href="schemes-manager.html">📋 Schemes</a>
+      <a href="products-manager.html">🛍️ Products & Services</a>
+      <a href="reviews-manager.html">⭐ Reviews</a>
+    </nav>
+    <div style="padding:20px;margin-top:auto">
+      <button onclick="logout()" style="width:100%;background:#7f1d1d;color:#fca5a5;border:none;padding:10px;border-radius:8px;cursor:pointer;font-size:14px">🚪 Logout</button>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="page-header">
+      <h1>📰 News Manager</h1>
+      <p>Create and manage news articles — saved to Firebase</p>
+    </div>
+    <div class="news-form">
+      <h2 style="color:#f1f5f9;margin-bottom:18px;font-size:17px" id="form-title">➕ Add News Post</h2>
+      <input type="hidden" id="edit-id">
+      <div class="form-group"><label>Headline *</label><input type="text" id="n-title" placeholder="News headline..."></div>
+      <div class="form-group"><label>Summary</label><input type="text" id="n-summary" placeholder="One line summary..."></div>
+      <div class="form-group"><label>Full Content</label><textarea id="n-content" placeholder="Write the full news content here..."></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Category</label>
+          <select id="n-category"><option>General</option><option>Announcement</option><option>Update</option><option>Event</option></select>
+        </div>
+        <div class="form-group"><label>Image URL <small style="color:#475569">(from Upload Media page)</small></label>
+          <input type="text" id="n-image" placeholder="Paste image URL or leave blank">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="btn-primary" id="save-btn" onclick="saveNews()">💾 Publish</button>
+        <button class="btn-secondary" onclick="clearForm()">✖ Cancel</button>
+      </div>
+    </div>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:14px">All News Posts (<span id="news-count">0</span>)</h3>
+    <div class="news-list" id="news-list"><p class="loading">⏳ Loading...</p></div>
+  </main>
+</div>
+<script>
+if(!localStorage.getItem('admin_logged_in')) window.location.href='login.html';
+function logout(){localStorage.removeItem('admin_logged_in');window.location.href='login.html';}
+
+async function saveNews(){
+  const title=document.getElementById('n-title').value.trim();
+  if(!title){alert('Please enter a headline!');return;}
+  const btn=document.getElementById('save-btn');
+  btn.disabled=true; btn.textContent='Saving...';
+  const editId=document.getElementById('edit-id').value;
+  const data={
+    title,
+    summary:document.getElementById('n-summary').value.trim(),
+    content:document.getElementById('n-content').value.trim(),
+    category:document.getElementById('n-category').value,
+    image:document.getElementById('n-image').value.trim(),
+    date:firebase.firestore.FieldValue.serverTimestamp()
+  };
+  try{
+    if(editId){ await db.collection('news').doc(editId).update(data); }
+    else { await db.collection('news').add(data); }
+    clearForm(); loadNews();
+  }catch(e){alert('Error: '+e.message);}
+  btn.disabled=false; btn.textContent='💾 Publish';
+}
+
+function clearForm(){
+  document.getElementById('edit-id').value='';
+  ['n-title','n-summary','n-content','n-image'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('n-category').value='General';
+  document.getElementById('form-title').textContent='➕ Add News Post';
+}
+
+async function editNews(id){
+  const doc=await db.collection('news').doc(id).get();
+  const n=doc.data();
+  document.getElementById('edit-id').value=id;
+  document.getElementById('n-title').value=n.title||'';
+  document.getElementById('n-summary').value=n.summary||'';
+  document.getElementById('n-content').value=n.content||'';
+  document.getElementById('n-category').value=n.category||'General';
+  document.getElementById('n-image').value=n.image||'';
+  document.getElementById('form-title').textContent='✏️ Edit News Post';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function deleteNews(id){
+  if(!confirm('Delete this news post?')) return;
+  db.collection('news').doc(id).delete().then(loadNews);
+}
+
+function loadNews(){
+  db.collection('news').orderBy('date','desc').get().then(snap=>{
+    document.getElementById('news-count').textContent=snap.size;
+    const list=document.getElementById('news-list');
+    if(snap.empty){list.innerHTML='<p style="color:#475569;padding:20px">No news posts yet.</p>';return;}
+    list.innerHTML=snap.docs.map(doc=>{const n=doc.data();return`<div class="news-item">
+      ${n.image?`<img src="${n.image}" alt="">`:`<div class="ni-placeholder">📰</div>`}
+      <div class="ni-body">
+        <div class="ni-title">${n.title}</div>
+        ${n.summary?`<div class="ni-summary">${n.summary}</div>`:''}
+        <div class="ni-date">📅 ${n.date?new Date(n.date.toDate()).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''} • ${n.category||''}</div>
+        <div class="ni-actions">
+          <button class="btn-edit" onclick="editNews('${doc.id}')">✏️ Edit</button>
+          <button class="btn-del" onclick="deleteNews('${doc.id}')">🗑️ Delete</button>
+        </div>
+      </div>
+    </div>`;}).join('');
+  }).catch(e=>document.getElementById('news-list').innerHTML=`<p style="color:#f87171">Error: ${e.message}</p>`);
+}
+loadNews();
+</script>
+</body>
+</html>
