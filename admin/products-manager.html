@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Products Manager – Admin</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-<script src="../firebase-config.js"></script>
 <style>
   .product-form{background:#1e293b;border-radius:12px;padding:24px;margin-bottom:28px}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -45,6 +41,22 @@
   .badge.offer{background:#78350f22;color:#fbbf24;border:1px solid #78350f}
   .loading,.empty-state{text-align:center;padding:40px;color:#475569;grid-column:1/-1}
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA12PmJh2DGgujscaZrYmCUAepcqK5P6Bk",
+  authDomain: "sudha-lic-website.firebaseapp.com",
+  projectId: "sudha-lic-website",
+  storageBucket: "sudha-lic-website.firebasestorage.app",
+  messagingSenderId: "236994886282",
+  appId: "1:236994886282:web:7072b506e8c739430fcb73"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+</script>
 </head>
 <body>
 <div class="admin-layout">
