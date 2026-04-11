@@ -5,173 +5,147 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Upload Media – Admin</title>
 <link rel="stylesheet" href="style.css">
-<style>
-  .drop-zone{border:2px dashed #334155;border-radius:14px;padding:60px 24px;text-align:center;cursor:pointer;transition:.2s;background:#1e293b;margin-bottom:24px}
-  .drop-zone.dragover{border-color:#6366f1;background:#6366f122}
-  .drop-zone .dz-icon{font-size:48px;margin-bottom:12px}
-  .drop-zone p{color:#64748b;font-size:15px;margin-bottom:8px}
-  .drop-zone span{font-size:13px;color:#475569}
-  .progress-bar{width:100%;height:8px;background:#0f172a;border-radius:4px;margin-top:16px;overflow:hidden;display:none}
-  .progress-fill{height:100%;background:#6366f1;border-radius:4px;transition:width .3s}
-  .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:20px}
-  .media-item{background:#1e293b;border:1px solid #334155;border-radius:10px;overflow:hidden;position:relative}
-  .media-item img{width:100%;height:110px;object-fit:cover;display:block}
-  .media-item .del-btn{position:absolute;top:6px;right:6px;background:#7f1d1dcc;color:#fca5a5;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer;display:none}
-  .media-item:hover .del-btn{display:block}
-  .media-item .filename{padding:6px 8px;font-size:11px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .copy-url{display:block;padding:4px 8px;font-size:10px;color:#6366f1;cursor:pointer;border-top:1px solid #334155;background:none;border-left:none;border-right:none;border-bottom:none;width:100%;text-align:left}
-  .copy-url:hover{background:#6366f122}
-  .note-section{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-top:24px}
-  .note-section h3{font-size:16px;font-weight:700;margin-bottom:12px}
-  .note-section textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;padding:12px;font-size:14px;outline:none;min-height:100px;resize:vertical}
-  .note-section textarea:focus{border-color:#6366f1}
-  .notes-list{margin-top:14px;display:flex;flex-direction:column;gap:8px}
-  .note-card{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:12px 14px;font-size:14px;color:#94a3b8;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-  .note-del{color:#f87171;background:none;border:none;cursor:pointer;font-size:14px;flex-shrink:0}
-  .loading{color:#64748b;font-size:14px;padding:20px 0}
-</style>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyA12PmJh2DGgujscaZrYmCUAepcqK5P6Bk",
-  authDomain: "sudha-lic-website.firebaseapp.com",
-  projectId: "sudha-lic-website",
-  storageBucket: "sudha-lic-website.firebasestorage.app",
-  messagingSenderId: "236994886282",
-  appId: "1:236994886282:web:7072b506e8c739430fcb73"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const storage = firebase.storage();
+firebase.initializeApp({
+  apiKey:"AIzaSyA12PmJh2DGgujscaZrYmCUAepcqK5P6Bk",
+  authDomain:"sudha-lic-website.firebaseapp.com",
+  projectId:"sudha-lic-website",
+  storageBucket:"sudha-lic-website.firebasestorage.app",
+  messagingSenderId:"236994886282",
+  appId:"1:236994886282:web:7072b506e8c739430fcb73"
+});
+var db=firebase.firestore();
+var storage=firebase.storage();
 </script>
+<style>
+.drop-zone{border:2px dashed #334155;border-radius:14px;padding:60px 24px;text-align:center;cursor:pointer;transition:.2s;background:#1e293b;margin-bottom:24px}
+.drop-zone.dragover{border-color:#6366f1;background:#6366f122}
+.drop-zone p{color:#64748b;font-size:15px;margin-bottom:8px}
+.drop-zone span{font-size:13px;color:#475569}
+.prog{width:100%;height:8px;background:#0f172a;border-radius:4px;margin-top:12px;overflow:hidden;display:none}
+.prog-fill{height:100%;background:#6366f1;border-radius:4px;transition:width .3s}
+.status-txt{font-size:13px;color:#94a3b8;margin-top:8px;min-height:20px}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:16px}
+.mi{background:#1e293b;border:1px solid #334155;border-radius:10px;overflow:hidden;position:relative}
+.mi img{width:100%;height:110px;object-fit:cover;display:block}
+.mi .del{position:absolute;top:6px;right:6px;background:#7f1d1dcc;color:#fca5a5;border:none;border-radius:50%;width:26px;height:26px;font-size:13px;cursor:pointer;display:none}
+.mi:hover .del{display:block}
+.mi .fn{padding:5px 8px;font-size:11px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi .copy{display:block;padding:4px 8px;font-size:10px;color:#6366f1;cursor:pointer;border-top:1px solid #334155;background:none;border-left:none;border-right:none;border-bottom:none;width:100%;text-align:left;font-family:inherit}
+.mi .copy:hover{background:#6366f122}
+.note-box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-top:28px}
+.note-box h3{font-size:16px;font-weight:700;margin-bottom:12px}
+.note-box textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;padding:12px;font-size:14px;outline:none;min-height:90px;resize:vertical;font-family:inherit}
+.note-box textarea:focus{border-color:#6366f1}
+.notes-list{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.nc{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:12px 14px;font-size:14px;color:#94a3b8;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.nc .nd{color:#f87171;background:none;border:none;cursor:pointer;font-size:14px;flex-shrink:0}
+</style>
 </head>
 <body>
 <div class="admin-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo">⚙️ AdminPanel</div>
+    <div class="sidebar-logo">⚙️ Admin Panel</div>
     <nav class="sidebar-nav">
       <a href="dashboard.html">🏠 Dashboard</a>
       <a href="upload.html" class="active">📤 Upload Media</a>
       <a href="news-manager.html">📰 News Posts</a>
       <a href="schemes-manager.html">📋 Schemes</a>
-      <a href="products-manager.html">🛍️ Products & Services</a>
+      <a href="products-manager.html">🛍️ Products</a>
       <a href="reviews-manager.html">⭐ Reviews</a>
+      <a href="../index.html" style="color:#4ade80">🏠 View Website</a>
     </nav>
-    <div style="padding:20px;margin-top:auto">
+    <div style="padding:20px">
       <button onclick="logout()" style="width:100%;background:#7f1d1d;color:#fca5a5;border:none;padding:10px;border-radius:8px;cursor:pointer;font-size:14px">🚪 Logout</button>
     </div>
   </aside>
   <main class="main-content">
-    <div class="page-header">
-      <h1>📤 Upload Media</h1>
-      <p>Drag & drop images — they go to Firebase Storage (visible to everyone)</p>
-    </div>
+    <div class="page-header"><h1>📤 Upload Media</h1><p>Upload images to Firebase Storage</p></div>
     <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-      <div class="dz-icon">🖼️</div>
+      <div style="font-size:48px;margin-bottom:12px">🖼️</div>
       <p><strong>Drag & Drop images here</strong></p>
       <span>or click to browse — PNG, JPG, GIF, WebP</span>
       <input type="file" id="file-input" accept="image/*" multiple style="display:none" onchange="handleFiles(this.files)">
     </div>
-    <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-    <div id="upload-status" style="font-size:13px;color:#94a3b8;margin-bottom:12px"></div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">📁 Media Library (<span id="img-count">0</span> images)</h3>
-    <div class="media-grid" id="media-grid"><p class="loading">⏳ Loading...</p></div>
-
-    <div class="note-section" style="margin-top:32px">
-      <h3>📝 Text Notes / Announcements</h3>
+    <div class="prog" id="prog"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="status-txt" id="status-txt"></div>
+    <h3 style="font-size:16px;font-weight:700;margin:16px 0 12px">📁 Media Library (<span id="img-count">0</span>)</h3>
+    <div class="media-grid" id="media-grid"><p style="color:#64748b;font-size:14px">⏳ Loading...</p></div>
+    <div class="note-box">
+      <h3>📝 Text Notes</h3>
       <textarea id="note-input" placeholder="Write a note or announcement..."></textarea>
       <button class="btn-primary" style="margin-top:10px" onclick="saveNote()">💾 Save Note</button>
-      <div class="notes-list" id="notes-list"><p class="loading">⏳ Loading...</p></div>
+      <div class="notes-list" id="notes-list"></div>
     </div>
   </main>
 </div>
-
 <script>
 if(!localStorage.getItem('admin_logged_in')) window.location.href='login.html';
 function logout(){localStorage.removeItem('admin_logged_in');window.location.href='login.html';}
-
-const dz=document.getElementById('drop-zone');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover');});
-dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');handleFiles(e.dataTransfer.files);});
+var dz=document.getElementById('drop-zone');
+dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('dragover');});
+dz.addEventListener('dragleave',function(){dz.classList.remove('dragover');});
+dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('dragover');handleFiles(e.dataTransfer.files);});
 
 function handleFiles(files){
-  Array.from(files).forEach(file=>{
-    if(!file.type.startsWith('image/')) return;
-    const bar=document.getElementById('progress-bar');
-    const fill=document.getElementById('progress-fill');
-    const status=document.getElementById('upload-status');
-    bar.style.display='block'; fill.style.width='0%';
-    status.textContent='⏳ Uploading '+file.name+'...';
-    const ref=storage.ref('media/'+Date.now()+'_'+file.name);
-    const task=ref.put(file);
+  Array.from(files).forEach(function(file){
+    if(!file.type.startsWith('image/'))return;
+    var prog=document.getElementById('prog');var fill=document.getElementById('prog-fill');var status=document.getElementById('status-txt');
+    prog.style.display='block';fill.style.width='0%';status.textContent='⏳ Uploading '+file.name+'...';
+    var ref=storage.ref('media/'+Date.now()+'_'+file.name);
+    var task=ref.put(file);
     task.on('state_changed',
-      snap=>{const pct=(snap.bytesTransferred/snap.totalBytes*100).toFixed(0);fill.style.width=pct+'%';},
-      err=>{status.textContent='❌ Upload failed: '+err.message; bar.style.display='none';},
-      ()=>{
-        task.snapshot.ref.getDownloadURL().then(url=>{
-          db.collection('media').add({name:file.name,url,date:firebase.firestore.FieldValue.serverTimestamp()}).then(()=>{
-            status.textContent='✅ '+file.name+' uploaded!';
-            bar.style.display='none';
-            loadImages();
-          });
+      function(snap){fill.style.width=(snap.bytesTransferred/snap.totalBytes*100).toFixed(0)+'%';},
+      function(e){status.textContent='❌ Failed: '+e.message;prog.style.display='none';},
+      function(){task.snapshot.ref.getDownloadURL().then(function(url){
+        db.collection('media').add({name:file.name,url:url,date:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+          status.textContent='✅ '+file.name+' uploaded!';prog.style.display='none';loadImages();
         });
-      }
+      });}
     );
   });
 }
 
-function loadImages(){
-  db.collection('media').orderBy('date','desc').get().then(snap=>{
-    document.getElementById('img-count').textContent=snap.size;
-    const grid=document.getElementById('media-grid');
-    if(snap.empty){grid.innerHTML='<p style="color:#475569;font-size:14px">No images yet. Upload some above!</p>';return;}
-    grid.innerHTML=snap.docs.map(doc=>{const d=doc.data();return`<div class="media-item">
-      <img src="${d.url}" alt="${d.name}">
-      <button class="del-btn" onclick="deleteImage('${doc.id}','${d.url}')">✕</button>
-      <div class="filename">${d.name}</div>
-      <button class="copy-url" onclick="copyURL('${d.url}')">📋 Copy URL</button>
-    </div>`;}).join('');
-  });
-}
-
 function deleteImage(id,url){
-  if(!confirm('Delete this image?')) return;
-  storage.refFromURL(url).delete().catch(()=>{});
+  if(!confirm('Delete this image?'))return;
+  storage.refFromURL(url).delete().catch(function(){});
   db.collection('media').doc(id).delete().then(loadImages);
 }
 
-function copyURL(url){
-  navigator.clipboard.writeText(url).then(()=>alert('✅ URL copied!\n\nPaste it in Image URL field when adding news/products.'));
+function copyURL(url){navigator.clipboard.writeText(url).then(function(){alert('✅ URL copied!\nPaste it in the Image URL field when adding news or products.');});}
+
+function loadImages(){
+  db.collection('media').orderBy('date','desc').get().then(function(snap){
+    document.getElementById('img-count').textContent=snap.size;
+    var grid=document.getElementById('media-grid');
+    if(snap.empty){grid.innerHTML='<p style="color:#64748b;font-size:14px">No images yet. Upload above!</p>';return;}
+    var html='';
+    snap.forEach(function(doc){var d=doc.data();html+='<div class="mi"><img src="'+d.url+'" alt="'+d.name+'"><button class="del" onclick="deleteImage(\''+doc.id+'\',\''+d.url+'\')">✕</button><div class="fn">'+d.name+'</div><button class="copy" onclick="copyURL(\''+d.url+'\')">📋 Copy URL</button></div>';});
+    grid.innerHTML=html;
+  });
 }
 
 function saveNote(){
-  const text=document.getElementById('note-input').value.trim();
-  if(!text) return;
-  db.collection('notes').add({text,date:firebase.firestore.FieldValue.serverTimestamp()}).then(()=>{
-    document.getElementById('note-input').value='';
-    loadNotes();
-  });
+  var text=document.getElementById('note-input').value.trim();
+  if(!text)return;
+  db.collection('notes').add({text:text,date:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){document.getElementById('note-input').value='';loadNotes();});
 }
 
 function loadNotes(){
-  db.collection('notes').orderBy('date','desc').get().then(snap=>{
-    const list=document.getElementById('notes-list');
+  db.collection('notes').orderBy('date','desc').get().then(function(snap){
+    var list=document.getElementById('notes-list');
     if(snap.empty){list.innerHTML='';return;}
-    list.innerHTML=snap.docs.map(doc=>{const n=doc.data();return`<div class="note-card">
-      <span>${n.text}</span>
-      <button class="note-del" onclick="deleteNote('${doc.id}')">🗑️</button>
-    </div>`;}).join('');
+    var html='';
+    snap.forEach(function(doc){html+='<div class="nc"><span>'+doc.data().text+'</span><button class="nd" onclick="deleteNote(\''+doc.id+'\')">🗑️</button></div>';});
+    list.innerHTML=html;
   });
 }
 
-function deleteNote(id){
-  db.collection('notes').doc(id).delete().then(loadNotes);
-}
-
-loadImages(); loadNotes();
+function deleteNote(id){db.collection('notes').doc(id).delete().then(loadNotes);}
+loadImages();loadNotes();
 </script>
 </body>
 </html>

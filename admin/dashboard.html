@@ -3,52 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
+<title>Dashboard – Admin</title>
 <link rel="stylesheet" href="style.css">
-<style>
-  .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:32px}
-  .stat-card{background:#1e293b;border-radius:12px;padding:20px;border:1px solid #334155;text-align:center}
-  .stat-card .icon{font-size:28px;margin-bottom:8px}
-  .stat-card .num{font-size:30px;font-weight:800;color:#6366f1}
-  .stat-card .label{font-size:12px;color:#64748b;margin-top:4px}
-  .modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-  .module-card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:24px;text-decoration:none;color:#e2e8f0;transition:.2s;display:block}
-  .module-card:hover{border-color:#6366f1;transform:translateY(-2px)}
-  .module-card .m-icon{font-size:36px;margin-bottom:12px}
-  .module-card .m-title{font-size:16px;font-weight:700;margin-bottom:4px}
-  .module-card .m-desc{font-size:13px;color:#64748b}
-  .pending-badge{background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700;margin-left:6px}
-</style>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyA12PmJh2DGgujscaZrYmCUAepcqK5P6Bk",
-  authDomain: "sudha-lic-website.firebaseapp.com",
-  projectId: "sudha-lic-website",
-  storageBucket: "sudha-lic-website.firebasestorage.app",
-  messagingSenderId: "236994886282",
-  appId: "1:236994886282:web:7072b506e8c739430fcb73"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const storage = firebase.storage();
+firebase.initializeApp({
+  apiKey:"AIzaSyA12PmJh2DGgujscaZrYmCUAepcqK5P6Bk",
+  authDomain:"sudha-lic-website.firebaseapp.com",
+  projectId:"sudha-lic-website",
+  storageBucket:"sudha-lic-website.firebasestorage.app",
+  messagingSenderId:"236994886282",
+  appId:"1:236994886282:web:7072b506e8c739430fcb73"
+});
+var db = firebase.firestore();
+var storage = firebase.storage();
 </script>
+<style>
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:32px}
+.stat-card{background:#1e293b;border-radius:12px;padding:20px;border:1px solid #334155;text-align:center}
+.stat-card .icon{font-size:28px;margin-bottom:8px}
+.stat-card .num{font-size:30px;font-weight:800;color:#6366f1}
+.stat-card .label{font-size:12px;color:#64748b;margin-top:4px}
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.module-card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:24px;text-decoration:none;color:#e2e8f0;transition:.2s;display:block}
+.module-card:hover{border-color:#6366f1;transform:translateY(-2px)}
+.m-icon{font-size:36px;margin-bottom:12px}
+.m-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.m-desc{font-size:13px;color:#64748b}
+.pending-badge{background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700;margin-left:6px}
+.err{color:#f87171;background:#7f1d1d22;border:1px solid #7f1d1d;border-radius:8px;padding:12px;font-size:14px}
+</style>
 </head>
 <body>
 <div class="admin-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo">⚙️ AdminPanel</div>
+    <div class="sidebar-logo">⚙️ Admin Panel</div>
     <nav class="sidebar-nav">
       <a href="dashboard.html" class="active">🏠 Dashboard</a>
       <a href="upload.html">📤 Upload Media</a>
       <a href="news-manager.html">📰 News Posts</a>
       <a href="schemes-manager.html">📋 Schemes</a>
-      <a href="products-manager.html">🛍️ Products & Services</a>
+      <a href="products-manager.html">🛍️ Products</a>
       <a href="reviews-manager.html">⭐ Reviews</a>
+      <a href="../index.html" style="margin-top:auto;color:#4ade80">🏠 View Website</a>
     </nav>
-    <div style="padding:20px;margin-top:auto">
+    <div style="padding:20px">
       <button onclick="logout()" style="width:100%;background:#7f1d1d;color:#fca5a5;border:none;padding:10px;border-radius:8px;cursor:pointer;font-size:14px">🚪 Logout</button>
     </div>
   </aside>
@@ -62,18 +63,18 @@ const storage = firebase.storage();
     </div>
     <h2 style="font-size:18px;font-weight:700;margin-bottom:16px;color:#94a3b8">Quick Access</h2>
     <div class="modules-grid">
-      <a href="upload.html" class="module-card"><div class="m-icon">📤</div><div class="m-title">Upload Media</div><div class="m-desc">Drag & drop images to library</div></a>
-      <a href="news-manager.html" class="module-card"><div class="m-icon">📰</div><div class="m-title">News Posts</div><div class="m-desc">Create and publish news articles</div></a>
-      <a href="schemes-manager.html" class="module-card"><div class="m-icon">📋</div><div class="m-title">Schemes</div><div class="m-desc">Add government schemes and offers</div></a>
-      <a href="products-manager.html" class="module-card"><div class="m-icon">🛍️</div><div class="m-title">Products & Services</div><div class="m-desc">Manage your offerings with prices</div></a>
-      <a href="reviews-manager.html" class="module-card" id="reviews-link"><div class="m-icon">⭐</div><div class="m-title">Reviews <span class="pending-badge" id="pending-badge" style="display:none"></span></div><div class="m-desc">Approve or reject customer reviews</div></a>
+      <a href="upload.html" class="module-card"><div class="m-icon">📤</div><div class="m-title">Upload Media</div><div class="m-desc">Drag & drop images</div></a>
+      <a href="news-manager.html" class="module-card"><div class="m-icon">📰</div><div class="m-title">News Posts</div><div class="m-desc">Create news articles</div></a>
+      <a href="schemes-manager.html" class="module-card"><div class="m-icon">📋</div><div class="m-title">Schemes</div><div class="m-desc">Add schemes and offers</div></a>
+      <a href="products-manager.html" class="module-card"><div class="m-icon">🛍️</div><div class="m-title">Products</div><div class="m-desc">Manage your products</div></a>
+      <a href="reviews-manager.html" class="module-card"><div class="m-icon">⭐</div><div class="m-title">Reviews <span class="pending-badge" id="pending-badge" style="display:none"></span></div><div class="m-desc">Approve customer reviews</div></a>
     </div>
   </main>
 </div>
 <script>
 if(!localStorage.getItem('admin_logged_in')) window.location.href='login.html';
 function logout(){localStorage.removeItem('admin_logged_in');window.location.href='login.html';}
-const h=new Date().getHours();
+var h=new Date().getHours();
 document.getElementById('greeting').textContent=(h<12?'Good morning ☀️':h<18?'Good afternoon 🌤️':'Good evening 🌙')+', Admin!';
 
 Promise.all([
@@ -82,19 +83,22 @@ Promise.all([
   db.collection('products').get(),
   db.collection('reviews').get(),
   db.collection('reviews').where('status','==','pending').get()
-]).then(([news,schemes,products,reviews,pending])=>{
-  document.getElementById('stats-grid').innerHTML=`
-    <div class="stat-card"><div class="icon">📰</div><div class="num">${news.size}</div><div class="label">News Posts</div></div>
-    <div class="stat-card"><div class="icon">📋</div><div class="num">${schemes.size}</div><div class="label">Schemes</div></div>
-    <div class="stat-card"><div class="icon">🛍️</div><div class="num">${products.size}</div><div class="label">Products</div></div>
-    <div class="stat-card"><div class="icon">⭐</div><div class="num">${reviews.size}</div><div class="label">Total Reviews</div></div>
-    <div class="stat-card"><div class="icon">⏳</div><div class="num" style="color:#f59e0b">${pending.size}</div><div class="label">Pending Reviews</div></div>`;
+]).then(function(results){
+  var news=results[0], schemes=results[1], products=results[2], reviews=results[3], pending=results[4];
+  document.getElementById('stats-grid').innerHTML=
+    '<div class="stat-card"><div class="icon">📰</div><div class="num">'+news.size+'</div><div class="label">News Posts</div></div>'+
+    '<div class="stat-card"><div class="icon">📋</div><div class="num">'+schemes.size+'</div><div class="label">Schemes</div></div>'+
+    '<div class="stat-card"><div class="icon">🛍️</div><div class="num">'+products.size+'</div><div class="label">Products</div></div>'+
+    '<div class="stat-card"><div class="icon">⭐</div><div class="num">'+reviews.size+'</div><div class="label">Reviews</div></div>'+
+    '<div class="stat-card"><div class="icon">⏳</div><div class="num" style="color:#f59e0b">'+pending.size+'</div><div class="label">Pending Reviews</div></div>';
   if(pending.size>0){
-    const b=document.getElementById('pending-badge');
+    var b=document.getElementById('pending-badge');
     b.textContent=pending.size+' pending';
     b.style.display='inline';
   }
-}).catch(e=>{ document.getElementById('stats-grid').innerHTML='<p style="color:#f87171;padding:10px">Could not load stats. Check Firebase config.</p>'; });
+}).catch(function(e){
+  document.getElementById('stats-grid').innerHTML='<div class="err">❌ Firebase Error: '+e.message+'<br><br>Please check Firestore rules are set to allow read/write.</div>';
+});
 </script>
 </body>
 </html>
