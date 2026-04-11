@@ -39,7 +39,7 @@ var db = firebase.firestore();
 .sc-btns{display:flex;gap:8px}
 .btn-e{background:#1e40af22;color:#60a5fa;border:1px solid #1e40af;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer}
 .btn-d{background:#7f1d1d22;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer}
-.msg{padding:12px;border-radius:8px;font-size:13px;margin-top:10px;display:none}
+.msg{padding:12px;border-radius:8px;font-size:14px;margin-top:10px;display:none;font-weight:600}
 .msg.ok{background:#14532d22;color:#4ade80;border:1px solid #14532d}
 .msg.err{background:#7f1d1d22;color:#f87171;border:1px solid #7f1d1d}
 .empty{color:#64748b;padding:20px;font-size:14px}
@@ -65,7 +65,13 @@ var db = firebase.firestore();
   <main class="main-content">
     <div class="page-header">
       <h1>📋 Schemes Manager</h1>
-      <p>Add and manage schemes — saved to Firebase</p>
+      <p>Add and manage schemes</p>
+    </div>
+
+    <div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;margin-bottom:20px">
+      <p style="color:#94a3b8;font-size:13px;margin-bottom:10px">🔧 Firebase Connection Test:</p>
+      <button onclick="testFirebase()" style="background:#6366f1;color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600">▶ Test Firebase Now</button>
+      <div id="test-result" style="margin-top:10px;font-size:13px;color:#94a3b8"></div>
     </div>
 
     <div class="form-box">
@@ -103,38 +109,60 @@ var db = firebase.firestore();
 if(!localStorage.getItem('admin_logged_in')) window.location.href='login.html';
 function logout(){localStorage.removeItem('admin_logged_in');window.location.href='login.html';}
 
+function testFirebase(){
+  var result = document.getElementById('test-result');
+  result.style.color = '#fbbf24';
+  result.textContent = '⏳ Testing...';
+  db.collection('test').add({msg:'hello', time: new Date().toString()})
+    .then(function(ref){
+      result.style.color = '#4ade80';
+      result.textContent = '✅ SUCCESS! Firebase works! ID: ' + ref.id;
+    })
+    .catch(function(e){
+      result.style.color = '#f87171';
+      result.textContent = '❌ FAILED: ' + e.code + ' — ' + e.message;
+    });
+}
+
 function showMsg(text, type){
-  var m=document.getElementById('msg');
-  m.textContent=text; m.className='msg '+type; m.style.display='block';
-  setTimeout(function(){m.style.display='none';},4000);
+  var m = document.getElementById('msg');
+  m.textContent = text;
+  m.className = 'msg ' + type;
+  m.style.display = 'block';
+  if(type==='ok') setTimeout(function(){m.style.display='none';},5000);
 }
 
 function saveScheme(){
-  var name=document.getElementById('s-name').value.trim();
-  if(!name){alert('Please enter scheme name!');return;}
-  var btn=document.getElementById('save-btn');
-  btn.disabled=true; btn.textContent='⏳ Saving...';
-  var editId=document.getElementById('edit-id').value;
-  var data={
-    name:name,
-    description:document.getElementById('s-desc').value.trim(),
-    eligible:document.getElementById('s-eligible').value.trim(),
-    benefit:document.getElementById('s-benefit').value.trim(),
-    lastDate:document.getElementById('s-date').value,
-    status:document.getElementById('s-status').value,
-    date:firebase.firestore.FieldValue.serverTimestamp()
+  var name = document.getElementById('s-name').value.trim();
+  if(!name){ alert('Please enter scheme name!'); return; }
+  var btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving...';
+  showMsg('⏳ Saving to Firebase...','ok');
+  var data = {
+    name: name,
+    description: document.getElementById('s-desc').value.trim(),
+    eligible: document.getElementById('s-eligible').value.trim(),
+    benefit: document.getElementById('s-benefit').value.trim(),
+    lastDate: document.getElementById('s-date').value,
+    status: document.getElementById('s-status').value,
+    date: firebase.firestore.FieldValue.serverTimestamp()
   };
+  var editId = document.getElementById('edit-id').value;
   var promise = editId ? db.collection('schemes').doc(editId).update(data) : db.collection('schemes').add(data);
-  promise.then(function(){
-    showMsg('✅ Scheme saved successfully!','ok');
-    clearForm();
-    loadSchemes();
-  }).catch(function(e){
-    showMsg('❌ Error: '+e.message,'err');
-    console.error(e);
-  }).finally(function(){
-    btn.disabled=false; btn.textContent='💾 Save Scheme';
-  });
+  promise
+    .then(function(){
+      showMsg('✅ Scheme saved successfully!','ok');
+      clearForm();
+      loadSchemes();
+    })
+    .catch(function(e){
+      showMsg('❌ Error: ' + e.code + ' — ' + e.message,'err');
+    })
+    .finally(function(){
+      btn.disabled = false;
+      btn.textContent = '💾 Save Scheme';
+    });
 }
 
 function clearForm(){
@@ -169,32 +197,24 @@ function deleteScheme(id){
 }
 
 function loadSchemes(){
-  db.collection('schemes').orderBy('date','desc').get().then(function(snap){
-    document.getElementById('count').textContent=snap.size;
-    var list=document.getElementById('list');
-    if(snap.empty){list.innerHTML='<p class="empty">No schemes yet. Add your first one above!</p>';return;}
-    var html='';
-    snap.forEach(function(doc){
-      var s=doc.data();
-      html+='<div class="sc">'+
-        '<div class="sc-top">'+
-          '<div class="sc-name">'+s.name+'</div>'+
-          '<span class="badge '+s.status+'">'+(s.status==='active'?'✅ Active':s.status==='upcoming'?'🔜 Upcoming':'❌ Closed')+'</span>'+
-        '</div>'+
-        (s.description?'<div class="sc-desc">'+s.description+'</div>':'')+
-        '<div class="sc-meta">'+(s.eligible?'👥 '+s.eligible+' &nbsp;':'')+(s.benefit?'💰 '+s.benefit:'')+'</div>'+
-        '<div class="sc-btns">'+
-          '<button class="btn-e" onclick="editScheme(\''+doc.id+'\')">✏️ Edit</button>'+
-          '<button class="btn-d" onclick="deleteScheme(\''+doc.id+'\')">🗑️ Delete</button>'+
-        '</div>'+
-      '</div>';
+  db.collection('schemes').orderBy('date','desc').get()
+    .then(function(snap){
+      document.getElementById('count').textContent=snap.size;
+      var list=document.getElementById('list');
+      if(snap.empty){list.innerHTML='<p class="empty">No schemes yet. Add your first one above!</p>';return;}
+      var html='';
+      snap.forEach(function(doc){
+        var s=doc.data();
+        html+='<div class="sc"><div class="sc-top"><div class="sc-name">'+s.name+'</div><span class="badge '+s.status+'">'+(s.status==='active'?'✅ Active':s.status==='upcoming'?'🔜 Upcoming':'❌ Closed')+'</span></div>'+(s.description?'<div class="sc-desc">'+s.description+'</div>':'')+'<div class="sc-meta">'+(s.eligible?'👥 '+s.eligible+' &nbsp;':'')+(s.benefit?'💰 '+s.benefit:'')+'</div><div class="sc-btns"><button class="btn-e" onclick="editScheme(\''+doc.id+'\')">✏️ Edit</button><button class="btn-d" onclick="deleteScheme(\''+doc.id+'\')">🗑️ Delete</button></div></div>';
+      });
+      list.innerHTML=html;
+    })
+    .catch(function(e){
+      document.getElementById('list').innerHTML='<p style="color:#f87171;padding:16px">❌ '+e.message+'</p>';
     });
-    list.innerHTML=html;
-  }).catch(function(e){
-    document.getElementById('list').innerHTML='<p style="color:#f87171">❌ Error loading: '+e.message+'</p>';
-  });
 }
-loadSchemes();
+
+window.onload = function(){ loadSchemes(); };
 </script>
 </body>
 </html>
