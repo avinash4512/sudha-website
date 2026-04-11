@@ -3,56 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YourBrand – Home</title>
+<title>Sudha Agarwal – LIC Financial Advisor, Lucknow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{--bg:#0a0f1e;--surface:#111827;--card:#1a2235;--border:#1e2d45;--accent:#6366f1;--text:#e2e8f0;--muted:#64748b}
-  body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif}
-  a{text-decoration:none;color:inherit}
-  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-  .nav-logo{font-size:20px;font-weight:800;color:var(--accent)}
-  .nav-links a{color:var(--muted);margin-left:24px;font-size:14px;transition:.15s}
-  .nav-links a:hover{color:var(--text)}
-  .nav-links .admin-link{background:var(--accent);color:#fff;padding:7px 16px;border-radius:8px;font-size:13px}
-  .hero{text-align:center;padding:80px 24px 60px;background:radial-gradient(ellipse at 50% 0%,#6366f122 0%,transparent 70%)}
-  .hero h1{font-size:clamp(32px,6vw,58px);font-weight:800;line-height:1.15;margin-bottom:16px}
-  .hero h1 span{color:var(--accent)}
-  .hero p{color:var(--muted);font-size:18px;max-width:500px;margin:0 auto 32px;line-height:1.6}
-  .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .btn-main{background:var(--accent);color:#fff;padding:13px 28px;border-radius:10px;font-size:15px;font-weight:700;display:inline-block;transition:.2s}
-  .btn-main:hover{background:#4f46e5}
-  .btn-outline{background:transparent;color:var(--text);padding:13px 28px;border-radius:10px;font-size:15px;font-weight:600;border:1px solid var(--border);display:inline-block;transition:.2s}
-  .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
-  .section{padding:60px 32px;max-width:1100px;margin:0 auto}
-  .section-title{font-size:26px;font-weight:800;margin-bottom:6px}
-  .section-sub{color:var(--muted);font-size:14px;margin-bottom:28px}
-  .news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-  .news-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:.2s}
-  .news-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-  .news-card img{width:100%;height:150px;object-fit:cover}
-  .nc-placeholder{height:150px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:36px}
-  .nc-body{padding:16px}
-  .nc-cat{font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:6px}
-  .nc-title{font-size:15px;font-weight:700;margin-bottom:6px;line-height:1.4}
-  .nc-summary{font-size:13px;color:var(--muted);line-height:1.5}
-  .nc-date{font-size:11px;color:#475569;margin-top:8px}
-  .schemes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-  .scheme-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
-  .sc-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:10px}
-  .sc-badge.active{background:#14532d22;color:#4ade80;border:1px solid #14532d}
-  .sc-badge.upcoming{background:#1e40af22;color:#60a5fa;border:1px solid #1e40af}
-  .sc-name{font-size:15px;font-weight:700;margin-bottom:6px}
-  .sc-desc{font-size:13px;color:var(--muted);line-height:1.5}
-  .sc-meta{font-size:12px;color:#475569;margin-top:8px}
-  .loading,.empty-msg{color:var(--muted);font-size:14px;padding:20px 0}
-  footer{background:var(--surface);border-top:1px solid var(--border);padding:24px 32px;text-align:center;color:var(--muted);font-size:14px}
-</style>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script>
 firebase.initializeApp({
   apiKey:"AIzaSyA12PmJh2DGgujscaZrYmCUAepcqK5P6Bk",
@@ -63,67 +18,464 @@ firebase.initializeApp({
   appId:"1:236994886282:web:7072b506e8c739430fcb73"
 });
 var db=firebase.firestore();
-var storage=firebase.storage();
 </script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0f1e;--surface:#111827;--card:#1a2235;--border:#1e2d45;--accent:#1a56db;--gold:#f59e0b;--text:#e2e8f0;--muted:#64748b}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif}
+a{text-decoration:none;color:inherit}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;height:68px}
+.nav-left{display:flex;align-items:center;gap:14px}
+.lic-logo{width:44px;height:44px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#1a56db;border:2px solid #1a56db;flex-shrink:0}
+.nav-brand-name{font-size:16px;font-weight:800;color:#fff;line-height:1.2}
+.nav-brand-sub{font-size:11px;color:var(--gold);font-weight:600}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{color:var(--muted);padding:7px 12px;font-size:13px;border-radius:8px;transition:.15s;font-weight:500}
+.nav-links a:hover{color:var(--text);background:#ffffff0d}
+.nav-links .nav-cta{background:var(--accent);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px}
+.hamburger span{width:22px;height:2px;background:var(--text);border-radius:2px}
+@media(max-width:768px){
+  .nav-links{display:none;position:absolute;top:68px;left:0;right:0;background:var(--surface);flex-direction:column;padding:16px;border-bottom:1px solid var(--border);gap:4px;align-items:stretch}
+  .nav-links.open{display:flex}
+  .hamburger{display:flex}
+  nav{padding:0 20px}
+}
+.hero{padding:70px 32px 50px;background:radial-gradient(ellipse at 30% 50%,#1a56db18 0%,transparent 60%);max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:768px){.hero{grid-template-columns:1fr;padding:40px 20px;text-align:center}}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#1a56db22;border:1px solid #1a56db55;border-radius:20px;padding:6px 14px;font-size:12px;color:#60a5fa;font-weight:600;margin-bottom:20px}
+.hero h1{font-size:clamp(26px,4vw,46px);font-weight:800;line-height:1.2;margin-bottom:16px}
+.hero h1 span{color:var(--gold)}
+.hero p{color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:28px}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+@media(max-width:768px){.hero-btns{justify-content:center}}
+.btn-main{background:var(--accent);color:#fff;padding:12px 26px;border-radius:10px;font-size:14px;font-weight:700;transition:.2s;display:inline-block}
+.btn-main:hover{background:#1648c0;transform:translateY(-1px)}
+.btn-gold{background:var(--gold);color:#000;padding:12px 26px;border-radius:10px;font-size:14px;font-weight:700;transition:.2s;display:inline-block}
+.btn-gold:hover{background:#e08d00}
+.btn-outline{background:transparent;color:var(--text);padding:12px 26px;border-radius:10px;font-size:14px;font-weight:600;border:1px solid var(--border);display:inline-block;transition:.2s}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.hero-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.hero-avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#6366f1);display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 14px;border:3px solid var(--gold)}
+.hero-card h3{font-size:18px;font-weight:800;margin-bottom:4px}
+.hero-card .hc-sub{color:var(--gold);font-size:12px;font-weight:600;margin-bottom:16px}
+.lic-badge{background:#1a56db22;border:1px solid #1a56db55;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:10px;text-align:left}
+.lb-icon{font-size:22px;flex-shrink:0}
+.lb-strong{display:block;font-size:12px;color:#fff;font-weight:700}
+.lb-small{font-size:11px;color:var(--muted)}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.hs{background:#0f172a;border-radius:10px;padding:10px;text-align:center}
+.hs .hn{font-size:20px;font-weight:800;color:var(--gold)}
+.hs .hl{font-size:10px;color:var(--muted);margin-top:2px}
+.stats-bar{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 32px}
+.stats-bar-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:600px){.stats-bar-inner{grid-template-columns:repeat(2,1fr)}}
+.sb{text-align:center}
+.sb .sn{font-size:28px;font-weight:800;color:var(--accent)}
+.sb .sl{font-size:12px;color:var(--muted);margin-top:4px}
+.section-wrap{padding:56px 32px;max-width:1100px;margin:0 auto}
+.section-wrap.bg{background:none}
+@media(max-width:768px){.section-wrap{padding:40px 20px}}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:8px}
+.section-title{font-size:clamp(20px,3vw,30px);font-weight:800;margin-bottom:8px}
+.section-title span{color:var(--gold)}
+.section-sub{color:var(--muted);font-size:14px;margin-bottom:28px}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin-top:28px}
+@media(max-width:768px){.about-grid{grid-template-columns:1fr}}
+.about-text p{color:var(--muted);line-height:1.8;font-size:14px;margin-bottom:14px}
+.about-points{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.ap{display:flex;align-items:flex-start;gap:10px}
+.ap-icon{width:34px;height:34px;background:#1a56db22;border:1px solid #1a56db44;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ap-text strong{display:block;font-size:13px;margin-bottom:2px}
+.ap-text span{font-size:12px;color:var(--muted)}
+.cert-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px}
+.cert-card h3{font-size:14px;font-weight:700;color:var(--gold);margin-bottom:14px}
+.cert-list{display:flex;flex-direction:column;gap:10px}
+.cert{display:flex;align-items:center;gap:10px;background:#0f172a;border-radius:8px;padding:12px}
+.cert-icon{font-size:24px;flex-shrink:0}
+.cert-name{font-size:13px;font-weight:700}
+.cert-body{font-size:11px;color:var(--muted);margin-top:2px}
+.services-bg{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:56px 32px}
+.services-inner{max-width:1100px;margin:0 auto}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:28px}
+.sv{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;transition:.2s}
+.sv:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 28px rgba(26,86,219,.2)}
+.sv-icon{font-size:32px;margin-bottom:12px}
+.sv-title{font-size:15px;font-weight:700;margin-bottom:6px}
+.sv-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.schemes-bg{background:var(--bg);padding:56px 32px;border-top:1px solid var(--border)}
+.schemes-inner{max-width:1100px;margin:0 auto}
+.schemes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:0}
+.scheme-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:.2s}
+.scheme-card:hover{border-color:var(--gold)}
+.sc-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:8px}
+.sc-badge.active{background:#14532d22;color:#4ade80;border:1px solid #14532d}
+.sc-badge.upcoming{background:#1e40af22;color:#60a5fa;border:1px solid #1e40af}
+.sc-name{font-size:14px;font-weight:700;margin-bottom:6px}
+.sc-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.sc-meta{font-size:11px;color:#475569;margin-top:6px}
+.news-bg{background:var(--surface);border-top:1px solid var(--border);padding:56px 32px}
+.news-inner{max-width:1100px;margin:0 auto}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:0}
+.news-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:.2s}
+.news-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.news-card img{width:100%;height:140px;object-fit:cover}
+.nc-placeholder{height:140px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:32px}
+.nc-body{padding:14px}
+.nc-cat{font-size:10px;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:4px}
+.nc-title{font-size:14px;font-weight:700;margin-bottom:4px;line-height:1.4}
+.nc-summary{font-size:12px;color:var(--muted);line-height:1.5}
+.nc-date{font-size:10px;color:#475569;margin-top:6px}
+.contact-bg{background:var(--bg);border-top:1px solid var(--border);padding:56px 32px}
+.contact-inner{max-width:1100px;margin:0 auto}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:28px}
+@media(max-width:768px){.contact-grid{grid-template-columns:1fr}}
+.contact-info{display:flex;flex-direction:column;gap:12px}
+.ci{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.ci-icon{font-size:22px;flex-shrink:0}
+.ci-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.ci-value{font-size:14px;font-weight:600}
+.ci-value a{color:var(--accent)}
+.contact-form-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px}
+.contact-form-card h3{font-size:17px;font-weight:700;margin-bottom:18px}
+.cf-group{margin-bottom:14px}
+.cf-group label{display:block;font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.cf-group input,.cf-group textarea,.cf-group select{width:100%;background:#0f172a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 13px;font-size:14px;outline:none;font-family:'Sora',sans-serif;transition:.2s}
+.cf-group input:focus,.cf-group textarea:focus,.cf-group select:focus{border-color:var(--accent)}
+.cf-group textarea{min-height:90px;resize:vertical}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.cf-row{grid-template-columns:1fr}}
+.cf-submit{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:.2s;margin-top:4px}
+.cf-submit:hover{background:#1648c0}
+.cf-submit:disabled{opacity:.6;cursor:not-allowed}
+.cf-msg{display:none;margin-top:10px;padding:10px;border-radius:8px;font-size:13px;font-weight:600;text-align:center}
+.cf-msg.ok{background:#14532d22;color:#4ade80;border:1px solid #14532d}
+.cf-msg.err{background:#7f1d1d22;color:#f87171;border:1px solid #7f1d1d}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:48px 32px 24px}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}
+@media(max-width:900px){.footer-top{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.footer-top{grid-template-columns:1fr}}
+.footer-logo{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.footer-logo-icon{width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--accent);border:2px solid var(--accent);flex-shrink:0}
+.footer-logo-name{font-size:15px;font-weight:800}
+.footer-logo-sub{font-size:10px;color:var(--gold);font-weight:600}
+.footer-about-text{font-size:12px;color:var(--muted);line-height:1.7;max-width:240px;margin-bottom:14px}
+.social-links{display:flex;gap:8px}
+.sl-btn{width:34px;height:34px;background:var(--card);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:.2s;cursor:pointer;text-decoration:none}
+.sl-btn:hover{border-color:var(--accent);background:#1a56db22}
+.footer-col h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:12px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.footer-col ul li a{font-size:13px;color:var(--muted);transition:.15s}
+.footer-col ul li a:hover{color:var(--text)}
+.footer-bottom{border-top:1px solid var(--border);padding-top:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.footer-bottom p{font-size:12px;color:var(--muted)}
+.footer-bottom a{color:var(--accent)}
+.whatsapp-float{position:fixed;bottom:24px;right:24px;z-index:999;background:#25d366;color:#fff;width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:.2s;text-decoration:none}
+.whatsapp-float:hover{transform:scale(1.1)}
+.loading,.empty-msg{color:var(--muted);font-size:14px;padding:20px 0}
+</style>
 </head>
 <body>
+
+<a href="https://wa.me/919999999999?text=Hello%20Sudha%20ji%2C%20I%20want%20to%20know%20about%20LIC%20policies" class="whatsapp-float" target="_blank">💬</a>
+
 <nav>
-  <div class="nav-logo">🌟 YourBrand</div>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
+  <div class="nav-left">
+    <div class="lic-logo">LIC</div>
+    <div>
+      <div class="nav-brand-name">Sudha Agarwal</div>
+      <div class="nav-brand-sub">LIC Financial Advisor · Lucknow</div>
+    </div>
+  </div>
+  <div class="nav-links" id="nav-links">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#schemes">Schemes</a>
+    <a href="#news">News</a>
     <a href="products.html">Products</a>
-    <a href="reviews.html">Reviews</a>
-    <a href="admin/login.html" class="admin-link">⚙️ Admin</a>
+    <a href="reviews.html">⭐ Reviews</a>
+    <a href="#contact" class="nav-cta">📞 Contact</a>
+  </div>
+  <div class="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')">
+    <span></span><span></span><span></span>
   </div>
 </nav>
 
+<section id="home">
 <div class="hero">
-  <h1>Welcome to<br><span>YourBrand</span></h1>
-  <p>Your trusted partner. Explore our products, services and latest news.</p>
-  <div class="hero-btns">
-    <a href="products.html" class="btn-main">🛍️ View Products</a>
-    <a href="reviews.html" class="btn-outline">⭐ Read Reviews</a>
+  <div>
+    <div class="hero-badge">🏆 Trusted LIC Agent since 2005</div>
+    <h1>Secure Your Future<br>with <span>Sudha Agarwal</span></h1>
+    <p>Your trusted LIC Financial Advisor in Lucknow. We help you choose the right Life Insurance, Investment and Pension plans for you and your family.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-main">📞 Get Free Advice</a>
+      <a href="#services" class="btn-gold">🛡️ Our Services</a>
+      <a href="reviews.html" class="btn-outline">⭐ Reviews</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-avatar">👩</div>
+    <h3>Mrs. Sudha Agarwal</h3>
+    <div class="hc-sub">LIC Financial Advisor & Agent</div>
+    <div class="lic-badge">
+      <div class="lb-icon">🏛️</div>
+      <div>
+        <span class="lb-strong">Life Insurance Corporation of India</span>
+        <span class="lb-small">Lucknow Branch · IRDA Certified</span>
+      </div>
+    </div>
+    <div class="lic-badge" style="margin-bottom:0">
+      <div class="lb-icon">📍</div>
+      <div>
+        <span class="lb-strong">Lucknow, Uttar Pradesh</span>
+        <span class="lb-small">Serving clients across UP</span>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><div class="hn">20+</div><div class="hl">Years Experience</div></div>
+      <div class="hs"><div class="hn">500+</div><div class="hl">Happy Clients</div></div>
+      <div class="hs"><div class="hn">50+</div><div class="hl">LIC Plans</div></div>
+      <div class="hs"><div class="hn">100%</div><div class="hl">Claim Support</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="sb"><div class="sn">₹50Cr+</div><div class="sl">Policies Issued</div></div>
+    <div class="sb"><div class="sn">500+</div><div class="sl">Satisfied Clients</div></div>
+    <div class="sb"><div class="sn">20+</div><div class="sl">Years of Service</div></div>
+    <div class="sb"><div class="sn">100%</div><div class="sl">Claim Assistance</div></div>
   </div>
 </div>
 
-<div class="section">
-  <div class="section-title">📰 Latest News</div>
-  <div class="section-sub">Stay updated with our latest announcements</div>
-  <div class="news-grid" id="news-grid"><p class="loading">⏳ Loading...</p></div>
+<section id="about">
+<div class="section-wrap">
+  <div class="section-label">About Me</div>
+  <div class="section-title">Meet <span>Mrs. Sudha Agarwal</span></div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I am <strong>Mrs. Sudha Agarwal</strong>, a dedicated and IRDA-certified LIC Financial Advisor based in Lucknow, Uttar Pradesh. With over <strong>20 years of experience</strong> in life insurance and financial planning, I have helped hundreds of families secure their future.</p>
+      <p>My mission is to help every family in Lucknow and across UP find the right insurance and investment plan that fits their budget and life goals. I believe every person deserves <strong>financial security</strong> and peace of mind.</p>
+      <p>Whether you need life insurance, pension plans, child education plans or investment-linked policies — I am here to guide you every step of the way, including complete <strong>claim support</strong>.</p>
+      <div class="about-points">
+        <div class="ap"><div class="ap-icon">🎓</div><div class="ap-text"><strong>IRDA Certified Agent</strong><span>Licensed by Insurance Regulatory and Development Authority of India</span></div></div>
+        <div class="ap"><div class="ap-icon">🤝</div><div class="ap-text"><strong>Free Consultation</strong><span>No charges for initial advice and policy comparison</span></div></div>
+        <div class="ap"><div class="ap-icon">📋</div><div class="ap-text"><strong>Claim Assistance</strong><span>Full support during policy claims and documentation</span></div></div>
+        <div class="ap"><div class="ap-icon">🏠</div><div class="ap-text"><strong>Home Visit Available</strong><span>I can visit your home for consultation in Lucknow</span></div></div>
+      </div>
+    </div>
+    <div class="cert-card">
+      <h3>🏆 Certifications & Achievements</h3>
+      <div class="cert-list">
+        <div class="cert"><div class="cert-icon">🏛️</div><div><div class="cert-name">LIC of India — Authorised Agent</div><div class="cert-body">Life Insurance Corporation of India, Lucknow Branch</div></div></div>
+        <div class="cert"><div class="cert-icon">📜</div><div><div class="cert-name">IRDA Certified</div><div class="cert-body">Insurance Regulatory & Development Authority of India</div></div></div>
+        <div class="cert"><div class="cert-icon">🥇</div><div><div class="cert-name">Club Member — LIC</div><div class="cert-body">Recognised for outstanding performance & service</div></div></div>
+        <div class="cert"><div class="cert-icon">⭐</div><div><div class="cert-name">20+ Years Experience</div><div class="cert-body">Serving clients since 2005 in Lucknow & nearby areas</div></div></div>
+        <div class="cert"><div class="cert-icon">💰</div><div><div class="cert-name">500+ Policies Sold</div><div class="cert-body">Helped 500+ families secure their financial future</div></div></div>
+      </div>
+    </div>
+  </div>
 </div>
+</section>
 
-<div class="section" style="border-top:1px solid var(--border)">
-  <div class="section-title">📋 Active Schemes</div>
-  <div class="section-sub">Current offers and government schemes available</div>
-  <div class="schemes-grid" id="schemes-grid"><p class="loading">⏳ Loading...</p></div>
+<section id="services">
+<div class="services-bg">
+  <div class="services-inner">
+    <div class="section-label">What We Offer</div>
+    <div class="section-title">Our <span>LIC Services</span></div>
+    <div class="section-sub">Choose from a wide range of LIC plans tailored for your needs</div>
+    <div class="services-grid">
+      <div class="sv"><div class="sv-icon">🛡️</div><div class="sv-title">Life Insurance Plans</div><div class="sv-desc">Term plans, endowment plans and whole life policies to protect your family's financial future.</div></div>
+      <div class="sv"><div class="sv-icon">👶</div><div class="sv-title">Child Plans</div><div class="sv-desc">Secure your child's education and future with LIC's dedicated child insurance plans.</div></div>
+      <div class="sv"><div class="sv-icon">🏖️</div><div class="sv-title">Pension & Retirement Plans</div><div class="sv-desc">Plan your retirement with LIC pension plans that give regular income after retirement.</div></div>
+      <div class="sv"><div class="sv-icon">📈</div><div class="sv-title">Investment + Insurance</div><div class="sv-desc">ULIP and money-back plans that grow your money while providing life cover.</div></div>
+      <div class="sv"><div class="sv-icon">🏥</div><div class="sv-title">Health Insurance</div><div class="sv-desc">LIC health plans to cover medical expenses and critical illness for your family.</div></div>
+      <div class="sv"><div class="sv-icon">📋</div><div class="sv-title">Claim Assistance</div><div class="sv-desc">Complete support in filing and processing insurance claims with full documentation help.</div></div>
+      <div class="sv"><div class="sv-icon">🔄</div><div class="sv-title">Policy Renewal</div><div class="sv-desc">Timely reminders and help with premium payments and policy renewal.</div></div>
+      <div class="sv"><div class="sv-icon">💡</div><div class="sv-title">Free Financial Advice</div><div class="sv-desc">Free consultation to understand which plan suits your income, age and life goals.</div></div>
+    </div>
+  </div>
 </div>
+</section>
 
-<footer><p>© 2025 YourBrand | <a href="admin/login.html" style="color:var(--accent)">Admin Panel</a></p></footer>
+<section id="schemes">
+<div class="schemes-bg">
+  <div class="schemes-inner">
+    <div class="section-label">Current Offers</div>
+    <div class="section-title">Active <span>Schemes & Plans</span></div>
+    <div class="section-sub">Latest LIC schemes and government plans available now</div>
+    <div class="schemes-grid" id="schemes-grid"><p class="loading">⏳ Loading schemes...</p></div>
+  </div>
+</div>
+</section>
+
+<section id="news">
+<div class="news-bg">
+  <div class="news-inner">
+    <div class="section-label">Latest Updates</div>
+    <div class="section-title">📰 News & <span>Announcements</span></div>
+    <div class="section-sub">Stay updated with latest LIC news and policy updates</div>
+    <div class="news-grid" id="news-grid"><p class="loading">⏳ Loading news...</p></div>
+  </div>
+</div>
+</section>
+
+<section id="contact">
+<div class="contact-bg">
+  <div class="contact-inner">
+    <div class="section-label">Get In Touch</div>
+    <div class="section-title">Contact <span>Mrs. Sudha Agarwal</span></div>
+    <div class="section-sub">Reach out for free consultation, policy details or any LIC queries</div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="ci"><div class="ci-icon">📞</div><div><div class="ci-label">Phone / WhatsApp</div><div class="ci-value"><a href="tel:+919999999999">+91 99999 99999</a></div></div></div>
+        <div class="ci"><div class="ci-icon">📧</div><div><div class="ci-label">Email</div><div class="ci-value"><a href="mailto:sudha.lic@gmail.com">sudha.lic@gmail.com</a></div></div></div>
+        <div class="ci"><div class="ci-icon">📍</div><div><div class="ci-label">Office Address</div><div class="ci-value">LIC Branch Office, Lucknow, Uttar Pradesh — 226001</div></div></div>
+        <div class="ci"><div class="ci-icon">🕐</div><div><div class="ci-label">Working Hours</div><div class="ci-value">Monday – Saturday: 9:00 AM to 6:00 PM</div></div></div>
+        <div class="ci"><div class="ci-icon">💬</div><div><div class="ci-label">WhatsApp</div><div class="ci-value"><a href="https://wa.me/919999999999" target="_blank">Chat on WhatsApp</a></div></div></div>
+      </div>
+      <div class="contact-form-card">
+        <h3>✉️ Send a Message</h3>
+        <div class="cf-row">
+          <div class="cf-group"><label>Your Name *</label><input type="text" id="cf-name" placeholder="e.g. Ramesh Kumar"></div>
+          <div class="cf-group"><label>Phone Number *</label><input type="tel" id="cf-phone" placeholder="e.g. 9876543210"></div>
+        </div>
+        <div class="cf-group"><label>Email (optional)</label><input type="email" id="cf-email" placeholder="your@email.com"></div>
+        <div class="cf-group"><label>Interested In</label>
+          <select id="cf-interest">
+            <option>Life Insurance Plan</option>
+            <option>Child Plan</option>
+            <option>Pension / Retirement Plan</option>
+            <option>Investment Plan (ULIP)</option>
+            <option>Health Insurance</option>
+            <option>Claim Assistance</option>
+            <option>Policy Renewal</option>
+            <option>Other / General Query</option>
+          </select>
+        </div>
+        <div class="cf-group"><label>Your Message</label><textarea id="cf-message" placeholder="Write your question here..."></textarea></div>
+        <button class="cf-submit" id="cf-btn" onclick="sendMessage()">🚀 Send Message</button>
+        <div class="cf-msg" id="cf-msg"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">
+          <div class="footer-logo-icon">LIC</div>
+          <div><div class="footer-logo-name">Sudha Agarwal</div><div class="footer-logo-sub">LIC Financial Advisor</div></div>
+        </div>
+        <p class="footer-about-text">Your trusted LIC agent in Lucknow. Helping families secure their future with the right insurance and investment plans since 2005.</p>
+        <div class="social-links">
+          <a href="https://wa.me/919999999999" target="_blank" class="sl-btn">💬</a>
+          <a href="tel:+919999999999" class="sl-btn">📞</a>
+          <a href="mailto:sudha.lic@gmail.com" class="sl-btn">📧</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#home">🏠 Home</a></li>
+          <li><a href="#about">👩 About Me</a></li>
+          <li><a href="#services">🛡️ Services</a></li>
+          <li><a href="#schemes">📋 Schemes</a></li>
+          <li><a href="#news">📰 News</a></li>
+          <li><a href="#contact">📞 Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>LIC Plans</h4>
+        <ul>
+          <li><a href="#services">🛡️ Life Insurance</a></li>
+          <li><a href="#services">👶 Child Plans</a></li>
+          <li><a href="#services">🏖️ Pension Plans</a></li>
+          <li><a href="#services">📈 Investment Plans</a></li>
+          <li><a href="#services">🏥 Health Insurance</a></li>
+          <li><a href="products.html">🛍️ All Products</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="reviews.html">⭐ Customer Reviews</a></li>
+          <li><a href="#contact">📋 Claim Assistance</a></li>
+          <li><a href="#contact">🔄 Policy Renewal</a></li>
+          <li><a href="#contact">💡 Free Consultation</a></li>
+          <li><a href="admin/login.html">⚙️ Admin Panel</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Sudha Agarwal — LIC Financial Advisor, Lucknow. All rights reserved.</p>
+      <p>🏛️ Authorised LIC Agent | IRDA Certified | <a href="#contact">Contact Us</a></p>
+    </div>
+  </div>
+</footer>
 
 <script>
-db.collection('news').orderBy('date','desc').limit(6).get().then(snap=>{
-  const ng=document.getElementById('news-grid');
+// Load News
+db.collection('news').orderBy('date','desc').limit(6).get().then(function(snap){
+  var ng=document.getElementById('news-grid');
   if(snap.empty){ng.innerHTML='<p class="empty-msg">No news yet.</p>';return;}
-  ng.innerHTML=snap.docs.map(doc=>{const n=doc.data();return`<div class="news-card">
-    ${n.image?`<img src="${n.image}" alt="">`:`<div class="nc-placeholder">📰</div>`}
-    <div class="nc-body"><div class="nc-cat">${n.category||'General'}</div>
-    <div class="nc-title">${n.title}</div>
-    ${n.summary?`<div class="nc-summary">${n.summary}</div>`:''}
-    <div class="nc-date">${n.date?new Date(n.date.toDate()).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''}</div>
-    </div></div>`;}).join('');
-}).catch(()=>document.getElementById('news-grid').innerHTML='<p class="empty-msg">Could not load news.</p>');
+  var h='';
+  snap.forEach(function(doc){
+    var n=doc.data();
+    h+='<div class="news-card">'+(n.image?'<img src="'+n.image+'" alt="">':'<div class="nc-placeholder">📰</div>')+'<div class="nc-body"><div class="nc-cat">'+(n.category||'General')+'</div><div class="nc-title">'+n.title+'</div>'+(n.summary?'<div class="nc-summary">'+n.summary+'</div>':'')+'<div class="nc-date">'+(n.date?new Date(n.date.toDate()).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'')+' </div></div></div>';
+  });
+  ng.innerHTML=h;
+}).catch(function(){document.getElementById('news-grid').innerHTML='<p class="empty-msg">Could not load news.</p>';});
 
-db.collection('schemes').orderBy('date','desc').limit(6).get().then(snap=>{
-  const sg=document.getElementById('schemes-grid');
-  const active=snap.docs.filter(d=>d.data().status!=='closed');
+// Load Schemes
+db.collection('schemes').orderBy('date','desc').limit(6).get().then(function(snap){
+  var sg=document.getElementById('schemes-grid');
+  var active=snap.docs.filter(function(d){return d.data().status!=='closed';});
   if(!active.length){sg.innerHTML='<p class="empty-msg">No active schemes at the moment.</p>';return;}
-  sg.innerHTML=active.map(doc=>{const s=doc.data();return`<div class="scheme-card">
-    <span class="sc-badge ${s.status}">${s.status==='active'?'✅ Active':'🔜 Upcoming'}</span>
-    <div class="sc-name">${s.name}</div>
-    ${s.description?`<div class="sc-desc">${s.description}</div>`:''}
-    <div class="sc-meta">${s.eligible?`👥 ${s.eligible}<br>`:''} ${s.benefit?`💰 ${s.benefit}`:''}</div>
-    </div>`;}).join('');
-}).catch(()=>document.getElementById('schemes-grid').innerHTML='<p class="empty-msg">Could not load schemes.</p>');
+  var h='';
+  active.forEach(function(doc){
+    var s=doc.data();
+    h+='<div class="scheme-card"><span class="sc-badge '+s.status+'">'+(s.status==='active'?'✅ Active':'🔜 Upcoming')+'</span><div class="sc-name">'+s.name+'</div>'+(s.description?'<div class="sc-desc">'+s.description+'</div>':'')+'<div class="sc-meta">'+(s.eligible?'👥 '+s.eligible+' ':'')+(s.benefit?'💰 '+s.benefit:'')+'</div></div>';
+  });
+  sg.innerHTML=h;
+}).catch(function(){document.getElementById('schemes-grid').innerHTML='<p class="empty-msg">Could not load schemes.</p>';});
+
+// Contact Form Submit
+function sendMessage(){
+  var name=document.getElementById('cf-name').value.trim();
+  var phone=document.getElementById('cf-phone').value.trim();
+  var msg=document.getElementById('cf-msg');
+  if(!name){alert('Please enter your name!');return;}
+  if(!phone){alert('Please enter your phone number!');return;}
+  var btn=document.getElementById('cf-btn');
+  btn.disabled=true;btn.textContent='⏳ Sending...';
+  db.collection('contacts').add({
+    name:name,phone:phone,
+    email:document.getElementById('cf-email').value.trim(),
+    interest:document.getElementById('cf-interest').value,
+    message:document.getElementById('cf-message').value.trim(),
+    date:firebase.firestore.FieldValue.serverTimestamp(),
+    status:'new'
+  }).then(function(){
+    msg.className='cf-msg ok';msg.style.display='block';
+    msg.textContent='✅ Message sent! Mrs. Sudha Agarwal will contact you soon.';
+    document.getElementById('cf-name').value='';
+    document.getElementById('cf-phone').value='';
+    document.getElementById('cf-email').value='';
+    document.getElementById('cf-message').value='';
+  }).catch(function(e){
+    msg.className='cf-msg err';msg.style.display='block';
+    msg.textContent='❌ Error: '+e.message;
+  }).finally(function(){btn.disabled=false;btn.textContent='🚀 Send Message';});
+}
 </script>
 </body>
 </html>
