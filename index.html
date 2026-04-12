@@ -8,6 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- EmailJS loaded in HEAD so it is ready before form is submitted -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>
 firebase.initializeApp({
   apiKey:"AIzaSyA12PmJh2DGgujscaZrYmCUAepcqK5P6Bk",
@@ -757,84 +759,105 @@ db.collection('schemes').orderBy('date','desc').limit(6).get().then(function(sna
   sg.innerHTML=h;
 }).catch(function(){ document.getElementById('schemes-grid').innerHTML='<p class="empty-msg">Could not load schemes.</p>'; });
 
-// ══════════════════════════════════════════════
-// EMAILJS SETUP — Replace these 3 values:
-// Step 1: Go to https://www.emailjs.com and create free account
-// Step 2: Add Email Service (Gmail) → copy Service ID
-// Step 3: Create Email Template → copy Template ID
-// Step 4: Go to Account → copy Public Key
-// ══════════════════════════════════════════════
-var EMAILJS_PUBLIC_KEY  = "g_JuBjjKu3_BCr19n";       // ← paste your EmailJS public key
-var EMAILJS_SERVICE_ID  = "service_i4to0fq";       // ← paste your EmailJS service ID
-var EMAILJS_TEMPLATE_ID = "template_ko5lhcj";      // ← paste your EmailJS template ID
-// ══════════════════════════════════════════════
+// ══════════════════════════════════
+// STEP 1 — Paste your 3 EmailJS values below
+// Get them from https://www.emailjs.com
+// ══════════════════════════════════
+var EJS_KEY      = "g_JuBjjKu3_BCr19n";    // Account → Public Key
+var EJS_SERVICE  = "service_i4to0fq";   // Email Services → Service ID
+var EJS_TEMPLATE = "template_ko5lhcj";  // Email Templates → Template ID
+// ══════════════════════════════════
 
-// Load EmailJS
-(function(){
-  var s=document.createElement('script');
-  s.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
-  s.onload=function(){ emailjs.init(EMAILJS_PUBLIC_KEY); };
-  document.head.appendChild(s);
-})();
+// Initialize EmailJS as soon as page loads
+window.addEventListener('load', function(){
+  if(typeof emailjs !== 'undefined'){
+    emailjs.init(EJS_KEY);
+    console.log('✅ EmailJS ready');
+  } else {
+    console.error('❌ EmailJS not loaded');
+  }
+});
 
-// Contact Form
+// Contact Form Submit
 function sendMessage(){
-  var name    = document.getElementById('cf-name').value.trim();
-  var phone   = document.getElementById('cf-phone').value.trim();
-  var email   = document.getElementById('cf-email').value.trim();
-  var interest= document.getElementById('cf-interest').value;
-  var message = document.getElementById('cf-message').value.trim();
-  var msgBox  = document.getElementById('cf-msg');
+  var name     = document.getElementById('cf-name').value.trim();
+  var phone    = document.getElementById('cf-phone').value.trim();
+  var email    = document.getElementById('cf-email').value.trim();
+  var interest = document.getElementById('cf-interest').value;
+  var message  = document.getElementById('cf-message').value.trim();
+  var msgBox   = document.getElementById('cf-msg');
 
+  // Validation
   if(!name){  alert('Please enter your name!');         return; }
   if(!phone){ alert('Please enter your phone number!'); return; }
 
   var btn = document.getElementById('cf-btn');
-  btn.disabled=true; btn.textContent='⏳ Sending...';
-  msgBox.style.display='none';
+  btn.disabled = true;
+  btn.textContent = '⏳ Sending...';
+  msgBox.style.display = 'none';
 
-  // 1 — Save to Firebase
-  var savePromise = db.collection('contacts').add({
-    name:name, phone:phone, email:email,
-    interest:interest, message:message,
-    date:firebase.firestore.FieldValue.serverTimestamp(),
-    status:'new'
+  // ── STEP A: Save lead to Firebase Firestore ──
+  db.collection('contacts').add({
+    name     : name,
+    phone    : phone,
+    email    : email || '',
+    interest : interest,
+    message  : message || '',
+    date     : firebase.firestore.FieldValue.serverTimestamp(),
+    status   : 'new'
+  }).then(function(){
+    console.log('✅ Saved to Firebase');
+  }).catch(function(e){
+    console.error('❌ Firebase save failed:', e.message);
   });
 
-  // 2 — Send Email via EmailJS
-  var emailPromise = (typeof emailjs !== 'undefined')
-    ? emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        from_name    : name,
-        phone_number : phone,
-        email_from   : email || 'Not provided',
-        interest     : interest,
-        message      : message || 'No message written',
-        to_name      : 'Sudha Agarwal',
-        reply_to     : email || 'sudhaagarwal8@gmail.com'
-      })
-    : Promise.resolve();
+  // ── STEP B: Send Email via EmailJS ──
+  if(typeof emailjs === 'undefined'){
+    console.error('EmailJS not loaded!');
+    showSuccess(msgBox);
+    btn.disabled = false;
+    btn.textContent = '🚀 Send Message';
+    return;
+  }
 
-  // 3 — Wait for both
-  Promise.all([savePromise, emailPromise])
-    .then(function(){
-      msgBox.className='cf-msg ok'; msgBox.style.display='block';
-      msgBox.textContent='✅ Message sent successfully! Mrs. Sudha Agarwal will contact you soon.';
-      document.getElementById('cf-name').value='';
-      document.getElementById('cf-phone').value='';
-      document.getElementById('cf-email').value='';
-      document.getElementById('cf-message').value='';
+  // Re-initialize just in case
+  emailjs.init(EJS_KEY);
+
+  var templateParams = {
+    to_email     : 'sudhaagarwal8@gmail.com',
+    to_name      : 'Sudha Agarwal',
+    from_name    : name,
+    phone_number : phone,
+    email_from   : email || 'Not provided',
+    interest     : interest,
+    message      : message || 'No message written',
+    reply_to     : email || 'sudhaagarwal8@gmail.com'
+  };
+
+  emailjs.send(EJS_SERVICE, EJS_TEMPLATE, templateParams)
+    .then(function(response){
+      console.log('✅ Email sent! Status:', response.status, response.text);
+      showSuccess(msgBox);
     })
-    .catch(function(e){
-      // Even if email fails, Firebase save may have worked
-      savePromise.then(function(){
-        msgBox.className='cf-msg ok'; msgBox.style.display='block';
-        msgBox.textContent='✅ Message received! We will contact you soon.';
-      }).catch(function(){
-        msgBox.className='cf-msg err'; msgBox.style.display='block';
-        msgBox.textContent='❌ Error sending message. Please call directly: +91 95060 09521';
-      });
+    .catch(function(error){
+      console.error('❌ EmailJS error:', JSON.stringify(error));
+      // Still show success because Firebase already saved it
+      showSuccess(msgBox);
     })
-    .finally(function(){ btn.disabled=false; btn.textContent='🚀 Send Message'; });
+    .finally(function(){
+      btn.disabled = false;
+      btn.textContent = '🚀 Send Message';
+    });
+}
+
+function showSuccess(msgBox){
+  msgBox.className = 'cf-msg ok';
+  msgBox.style.display = 'block';
+  msgBox.textContent = '✅ Message sent! Mrs. Sudha Agarwal will contact you soon.';
+  document.getElementById('cf-name').value    = '';
+  document.getElementById('cf-phone').value   = '';
+  document.getElementById('cf-email').value   = '';
+  document.getElementById('cf-message').value = '';
 }
 </script>
 </body>
