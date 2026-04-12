@@ -502,7 +502,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
   <div class="schemes-inner">
     <div class="section-label">Current Offers</div>
     <div class="section-title">Active <span>Schemes & Plans</span></div>
-    <div class="section-sub">Latest schemes and plans available now — updated by admin</div>
+    <div class="section-sub">Latest schemes and plans available now</div>
     <div class="schemes-grid" id="schemes-grid"><p class="loading">⏳ Loading schemes...</p></div>
   </div>
 </div>
@@ -685,7 +685,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
           <li><a href="https://licindia.in" target="_blank">🏛️ LIC Official Website</a></li>
           <li><a href="https://www.starhealth.in" target="_blank">❤️ Star Health Website</a></li>
           <li><a href="https://www.hdfclife.com" target="_blank">🔵 HDFC Life Website</a></li>
-          <li><a href="admin/login.html">⚙️ Admin Panel</a></li>
+
         </ul>
       </div>
     </div>
@@ -757,33 +757,84 @@ db.collection('schemes').orderBy('date','desc').limit(6).get().then(function(sna
   sg.innerHTML=h;
 }).catch(function(){ document.getElementById('schemes-grid').innerHTML='<p class="empty-msg">Could not load schemes.</p>'; });
 
+// ══════════════════════════════════════════════
+// EMAILJS SETUP — Replace these 3 values:
+// Step 1: Go to https://www.emailjs.com and create free account
+// Step 2: Add Email Service (Gmail) → copy Service ID
+// Step 3: Create Email Template → copy Template ID
+// Step 4: Go to Account → copy Public Key
+// ══════════════════════════════════════════════
+var EMAILJS_PUBLIC_KEY  = "g_JuBjjKu3_BCr19n";       // ← paste your EmailJS public key
+var EMAILJS_SERVICE_ID  = "service_i4to0fq";       // ← paste your EmailJS service ID
+var EMAILJS_TEMPLATE_ID = "template_ko5lhcj";      // ← paste your EmailJS template ID
+// ══════════════════════════════════════════════
+
+// Load EmailJS
+(function(){
+  var s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+  s.onload=function(){ emailjs.init(EMAILJS_PUBLIC_KEY); };
+  document.head.appendChild(s);
+})();
+
 // Contact Form
 function sendMessage(){
-  var name=document.getElementById('cf-name').value.trim();
-  var phone=document.getElementById('cf-phone').value.trim();
-  var msg=document.getElementById('cf-msg');
-  if(!name){ alert('Please enter your name!'); return; }
+  var name    = document.getElementById('cf-name').value.trim();
+  var phone   = document.getElementById('cf-phone').value.trim();
+  var email   = document.getElementById('cf-email').value.trim();
+  var interest= document.getElementById('cf-interest').value;
+  var message = document.getElementById('cf-message').value.trim();
+  var msgBox  = document.getElementById('cf-msg');
+
+  if(!name){  alert('Please enter your name!');         return; }
   if(!phone){ alert('Please enter your phone number!'); return; }
-  var btn=document.getElementById('cf-btn');
+
+  var btn = document.getElementById('cf-btn');
   btn.disabled=true; btn.textContent='⏳ Sending...';
-  db.collection('contacts').add({
-    name:name, phone:phone,
-    email:document.getElementById('cf-email').value.trim(),
-    interest:document.getElementById('cf-interest').value,
-    message:document.getElementById('cf-message').value.trim(),
+  msgBox.style.display='none';
+
+  // 1 — Save to Firebase
+  var savePromise = db.collection('contacts').add({
+    name:name, phone:phone, email:email,
+    interest:interest, message:message,
     date:firebase.firestore.FieldValue.serverTimestamp(),
     status:'new'
-  }).then(function(){
-    msg.className='cf-msg ok'; msg.style.display='block';
-    msg.textContent='✅ Message sent! Mrs. Sudha Agarwal will contact you soon.';
-    document.getElementById('cf-name').value='';
-    document.getElementById('cf-phone').value='';
-    document.getElementById('cf-email').value='';
-    document.getElementById('cf-message').value='';
-  }).catch(function(e){
-    msg.className='cf-msg err'; msg.style.display='block';
-    msg.textContent='❌ Error: '+e.message;
-  }).finally(function(){ btn.disabled=false; btn.textContent='🚀 Send Message'; });
+  });
+
+  // 2 — Send Email via EmailJS
+  var emailPromise = (typeof emailjs !== 'undefined')
+    ? emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        from_name    : name,
+        phone_number : phone,
+        email_from   : email || 'Not provided',
+        interest     : interest,
+        message      : message || 'No message written',
+        to_name      : 'Sudha Agarwal',
+        reply_to     : email || 'sudhaagarwal8@gmail.com'
+      })
+    : Promise.resolve();
+
+  // 3 — Wait for both
+  Promise.all([savePromise, emailPromise])
+    .then(function(){
+      msgBox.className='cf-msg ok'; msgBox.style.display='block';
+      msgBox.textContent='✅ Message sent successfully! Mrs. Sudha Agarwal will contact you soon.';
+      document.getElementById('cf-name').value='';
+      document.getElementById('cf-phone').value='';
+      document.getElementById('cf-email').value='';
+      document.getElementById('cf-message').value='';
+    })
+    .catch(function(e){
+      // Even if email fails, Firebase save may have worked
+      savePromise.then(function(){
+        msgBox.className='cf-msg ok'; msgBox.style.display='block';
+        msgBox.textContent='✅ Message received! We will contact you soon.';
+      }).catch(function(){
+        msgBox.className='cf-msg err'; msgBox.style.display='block';
+        msgBox.textContent='❌ Error sending message. Please call directly: +91 95060 09521';
+      });
+    })
+    .finally(function(){ btn.disabled=false; btn.textContent='🚀 Send Message'; });
 }
 </script>
 </body>

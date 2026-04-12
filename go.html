@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Access</title>
+<!-- NO TITLE showing "Admin" - looks like a generic page -->
+<meta name="robots" content="noindex, nofollow">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0f1e;color:#e2e8f0;font-family:'Segoe UI',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.box{background:#111827;border:1px solid #1e2d45;border-radius:16px;padding:40px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.lock{font-size:44px;text-align:center;margin-bottom:16px}
+h1{font-size:22px;font-weight:800;color:#6366f1;text-align:center;margin-bottom:6px}
+p{color:#64748b;font-size:13px;text-align:center;margin-bottom:28px}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.fg input{width:100%;background:#0a0f1e;border:1px solid #1e2d45;border-radius:8px;color:#e2e8f0;padding:12px 16px;font-size:15px;outline:none;transition:.2s}
+.fg input:focus{border-color:#6366f1}
+.btn{width:100%;background:#6366f1;color:#fff;border:none;border-radius:8px;padding:13px;font-size:16px;font-weight:700;cursor:pointer;transition:.2s;margin-top:6px}
+.btn:hover{background:#4f46e5}
+.err{display:none;background:#7f1d1d22;border:1px solid #7f1d1d;border-radius:8px;color:#f87171;font-size:13px;margin-top:12px;padding:10px;text-align:center}
+.attempts{font-size:11px;color:#475569;text-align:center;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="lock">🔐</div>
+  <h1>Secure Access</h1>
+  <p>Authorised personnel only</p>
+  <div class="fg">
+    <label>Username</label>
+    <input type="text" id="u" placeholder="Enter username" onkeydown="if(event.key==='Enter')go()">
+  </div>
+  <div class="fg">
+    <label>Password</label>
+    <input type="password" id="p" placeholder="Enter password" onkeydown="if(event.key==='Enter')go()">
+  </div>
+  <button class="btn" onclick="go()">🚀 Access Dashboard</button>
+  <div class="err" id="err">❌ Incorrect credentials. Try again.</div>
+  <div class="attempts" id="att"></div>
+</div>
+<script>
+/* ✏️ CHANGE YOUR USERNAME AND PASSWORD HERE */
+var U="admin";
+var P="admin123";
+var tries=0; var maxTries=5;
+
+function go(){
+  var u=document.getElementById('u').value.trim();
+  var pw=document.getElementById('p').value.trim();
+  if(u===U && pw===P){
+    localStorage.setItem('admin_logged_in','yes');
+    window.location.href='admin/dashboard.html';
+  } else {
+    tries++;
+    document.getElementById('err').style.display='block';
+    if(tries>=maxTries){
+      document.getElementById('att').textContent='Too many attempts. Please wait.';
+      document.querySelector('.btn').disabled=true;
+      setTimeout(function(){
+        document.querySelector('.btn').disabled=false;
+        tries=0;
+        document.getElementById('att').textContent='';
+      }, 30000);
+    } else {
+      document.getElementById('att').textContent=(maxTries-tries)+' attempts remaining';
+    }
+  }
+}
+</script>
+</body>
+</html>
