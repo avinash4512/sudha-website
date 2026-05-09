@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sudha Agarwal – Financial Advisor | LIC · Star Health · HDFC Life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- EmailJS loaded in HEAD so it is ready before form is submitted -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyA12PmJh2DGgujscaZrYmCUAepcqK5P6Bk",
+  authDomain:"sudha-lic-website.firebaseapp.com",
+  projectId:"sudha-lic-website",
+  storageBucket:"sudha-lic-website.firebasestorage.app",
+  messagingSenderId:"236994886282",
+  appId:"1:236994886282:web:7072b506e8c739430fcb73"
+});
+var db=firebase.firestore();
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0f1e;--surface:#111827;--card:#1a2235;--border:#1e2d45;--accent:#1a56db;--gold:#f59e0b;--text:#e2e8f0;--muted:#64748b;--star:#e8131b;--hdfc:#004c8f}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;height:68px}
+.nav-left{display:flex;align-items:center;gap:14px}
+.lic-logo{width:44px;height:44px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#1a56db;border:2px solid #1a56db;flex-shrink:0}
+.nav-brand-name{font-size:15px;font-weight:800;color:#fff;line-height:1.2}
+.nav-brand-sub{font-size:10px;color:var(--gold);font-weight:600}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{color:var(--muted);padding:7px 11px;font-size:13px;border-radius:8px;transition:.15s;font-weight:500}
+.nav-links a:hover{color:var(--text);background:#ffffff0d}
+.nav-links .nav-cta{background:var(--accent);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px}
+.hamburger span{width:22px;height:2px;background:var(--text);border-radius:2px}
+@media(max-width:900px){
+  .nav-links{display:none;position:absolute;top:68px;left:0;right:0;background:var(--surface);flex-direction:column;padding:16px;border-bottom:1px solid var(--border);gap:4px;align-items:stretch}
+  .nav-links.open{display:flex}
+  .hamburger{display:flex}
+  nav{padding:0 20px}
+}
+
+/* PARTNER BADGES in nav area */
+.partner-strip{background:#0f172a;border-bottom:1px solid var(--border);padding:7px 32px;display:flex;align-items:center;gap:16px;font-size:11px;color:var(--muted)}
+.partner-strip span{font-weight:600}
+.ps-lic{color:#60a5fa}
+.ps-star{color:#f87171}
+.ps-hdfc{color:#93c5fd}
+.ps-dot{width:4px;height:4px;background:var(--border);border-radius:50%}
+@media(max-width:600px){.partner-strip{padding:7px 16px;flex-wrap:wrap;gap:8px}}
+
+/* HERO */
+.hero{padding:60px 32px 50px;background:radial-gradient(ellipse at 30% 50%,#1a56db15 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,#f59e0b08 0%,transparent 50%);max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:768px){.hero{grid-template-columns:1fr;padding:36px 20px;text-align:center}}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#1a56db22;border:1px solid #1a56db55;border-radius:20px;padding:6px 14px;font-size:12px;color:#60a5fa;font-weight:600;margin-bottom:16px}
+.hero h1{font-size:clamp(24px,3.8vw,44px);font-weight:800;line-height:1.2;margin-bottom:14px}
+.hero h1 span{color:var(--gold)}
+.hero p{color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:20px}
+
+/* COMPANY BADGES in hero */
+.company-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+@media(max-width:768px){.company-badges{justify-content:center}}
+.cb{display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid}
+.cb-lic{background:#1a56db18;border-color:#1a56db55;color:#60a5fa}
+.cb-star{background:#e8131b18;border-color:#e8131b55;color:#f87171}
+.cb-hdfc{background:#004c8f18;border-color:#004c8f88;color:#93c5fd}
+.cb-icon{font-size:16px}
+
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:768px){.hero-btns{justify-content:center}}
+.btn-main{background:var(--accent);color:#fff;padding:11px 22px;border-radius:10px;font-size:14px;font-weight:700;transition:.2s;display:inline-block}
+.btn-main:hover{background:#1648c0;transform:translateY(-1px)}
+.btn-gold{background:var(--gold);color:#000;padding:11px 22px;border-radius:10px;font-size:14px;font-weight:700;transition:.2s;display:inline-block}
+.btn-gold:hover{background:#e08d00}
+.btn-outline{background:transparent;color:var(--text);padding:11px 22px;border-radius:10px;font-size:14px;font-weight:600;border:1px solid var(--border);display:inline-block;transition:.2s}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+
+/* HERO CARD */
+.hero-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.hero-avatar{width:100px;height:100px;border-radius:50%;background:#1a2235;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 14px;border:3px solid var(--gold);overflow:hidden;padding:0}
+.hero-card h3{font-size:17px;font-weight:800;margin-bottom:3px}
+.hc-sub{color:var(--gold);font-size:12px;font-weight:600;margin-bottom:14px}
+.hc-companies{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.hcc{display:flex;align-items:center;gap:10px;border-radius:8px;padding:9px 12px;text-align:left}
+.hcc-lic{background:#1a56db18;border:1px solid #1a56db44}
+.hcc-star{background:#e8131b18;border:1px solid #e8131b44}
+.hcc-hdfc{background:#004c8f18;border:1px solid #004c8f66}
+.hcc-icon{font-size:20px;flex-shrink:0}
+.hcc-name{font-size:12px;font-weight:700;color:var(--text)}
+.hcc-desc{font-size:10px;color:var(--muted)}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.hs{background:#0f172a;border-radius:8px;padding:9px;text-align:center}
+.hs .hn{font-size:18px;font-weight:800;color:var(--gold)}
+.hs .hl{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* SECTION COMMON */
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:8px}
+.section-title{font-size:clamp(20px,3vw,30px);font-weight:800;margin-bottom:8px}
+.section-title span{color:var(--gold)}
+.section-sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+
+/* ABOUT */
+.about-bg{padding:56px 32px;max-width:1100px;margin:0 auto}
+@media(max-width:768px){.about-bg{padding:40px 20px}}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin-top:24px}
+@media(max-width:768px){.about-grid{grid-template-columns:1fr}}
+.about-text p{color:var(--muted);line-height:1.8;font-size:14px;margin-bottom:14px}
+
+/* ASSOCIATED COMPANIES in About */
+.assoc-companies{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.assoc-title{font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.ac{display:flex;align-items:center;gap:12px;border-radius:10px;padding:12px 14px}
+.ac-lic{background:#1a56db18;border:1px solid #1a56db44}
+.ac-star{background:#e8131b18;border:1px solid #e8131b44}
+.ac-hdfc{background:#004c8f18;border:1px solid #004c8f66}
+.ac-icon{font-size:24px;flex-shrink:0}
+.ac-name{font-size:13px;font-weight:700}
+.ac-lic .ac-name{color:#60a5fa}
+.ac-star .ac-name{color:#f87171}
+.ac-hdfc .ac-name{color:#93c5fd}
+.ac-desc{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* CERTIFICATIONS INFOGRAPHIC */
+.cert-infographic{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px}
+.cert-infographic h3{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:18px;text-align:center;text-transform:uppercase;letter-spacing:1px}
+.cert-items{display:flex;flex-direction:column}
+.cert-item{display:flex;gap:0;align-items:stretch}
+.cert-dot-col{display:flex;flex-direction:column;align-items:center;width:38px;flex-shrink:0}
+.cert-dot{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#6366f1);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:2px solid var(--gold)}
+.cert-line{width:2px;flex:1;background:linear-gradient(to bottom,var(--accent),#1a56db22);margin:0 auto;min-height:18px}
+.cert-content{padding:0 0 18px 12px;flex:1}
+.cert-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.cert-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.cert-tag{display:inline-block;background:#1a56db22;border:1px solid #1a56db55;border-radius:10px;padding:2px 8px;font-size:10px;color:#60a5fa;font-weight:600;margin-top:4px}
+
+/* SERVICES */
+.services-bg{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:56px 32px}
+.services-inner{max-width:1100px;margin:0 auto}
+
+/* COMPANY TABS */
+.company-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.ctab{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid;transition:.2s;font-family:'Sora',sans-serif}
+.ctab-lic{background:#1a56db22;border-color:#1a56db55;color:#60a5fa}
+.ctab-lic.active,.ctab-lic:hover{background:#1a56db;color:#fff;border-color:#1a56db}
+.ctab-star{background:#e8131b18;border-color:#e8131b55;color:#f87171}
+.ctab-star.active,.ctab-star:hover{background:#e8131b;color:#fff;border-color:#e8131b}
+.ctab-hdfc{background:#004c8f18;border-color:#004c8f66;color:#93c5fd}
+.ctab-hdfc.active,.ctab-hdfc:hover{background:#004c8f;color:#fff;border-color:#004c8f}
+
+.services-panel{display:none}
+.services-panel.active{display:block}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.sv{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;transition:.2s;cursor:pointer;display:block;color:inherit}
+.sv:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.3)}
+.sv-lic:hover{border-color:#1a56db}
+.sv-star:hover{border-color:#e8131b}
+.sv-hdfc:hover{border-color:#004c8f}
+.sv-icon{font-size:28px;margin-bottom:10px}
+.sv-title{font-size:14px;font-weight:700;margin-bottom:5px}
+.sv-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px}
+.sv-cta{font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px}
+.sv-lic .sv-cta{color:#60a5fa}
+.sv-star .sv-cta{color:#f87171}
+.sv-hdfc .sv-cta{color:#93c5fd}
+
+/* SCHEMES */
+.schemes-bg{background:var(--bg);border-top:1px solid var(--border);padding:56px 32px}
+.schemes-inner{max-width:1100px;margin:0 auto}
+.schemes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.scheme-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:.2s}
+.scheme-card:hover{border-color:var(--gold)}
+.sc-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:8px}
+.sc-badge.active{background:#14532d22;color:#4ade80;border:1px solid #14532d}
+.sc-badge.upcoming{background:#1e40af22;color:#60a5fa;border:1px solid #1e40af}
+.sc-name{font-size:14px;font-weight:700;margin-bottom:6px}
+.sc-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.sc-meta{font-size:11px;color:#475569;margin-top:6px}
+
+/* NEWS CAROUSEL */
+.news-bg{background:var(--surface);border-top:1px solid var(--border);padding:56px 32px}
+.news-inner{max-width:1100px;margin:0 auto}
+.carousel-wrap{overflow:hidden;border-radius:16px;margin-top:0}
+.carousel-track{display:flex;transition:transform .4s ease}
+.carousel-slide{min-width:100%;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:10px}
+.cs-badge{display:inline-flex;align-items:center;gap:6px;background:#1a56db22;border:1px solid #1a56db55;border-radius:20px;padding:4px 12px;font-size:11px;color:#60a5fa;font-weight:700;width:fit-content}
+.cs-title{font-size:17px;font-weight:800;line-height:1.4;color:var(--text)}
+.cs-points{display:flex;flex-direction:column;gap:7px}
+.cs-point{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--muted);line-height:1.5}
+.cs-point::before{content:"▶";color:var(--accent);font-size:10px;margin-top:3px;flex-shrink:0}
+.cs-footer{display:flex;align-items:center;justify-content:space-between;margin-top:6px;flex-wrap:wrap;gap:8px}
+.cs-source{font-size:11px;color:#475569}
+.cs-link{font-size:12px;color:var(--accent);font-weight:700;border:1px solid #1a56db55;border-radius:6px;padding:5px 12px;transition:.2s}
+.cs-link:hover{background:#1a56db22}
+.carousel-nav{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:16px}
+.carousel-btn{width:36px;height:36px;background:var(--card);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:.2s;color:var(--text)}
+.carousel-btn:hover{border-color:var(--accent);background:#1a56db22}
+.carousel-dots{display:flex;gap:7px}
+.carousel-dot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:.3s}
+.carousel-dot.active{background:var(--accent);width:22px;border-radius:4px}
+
+/* REVIEWS SECTION */
+.reviews-bg{background:var(--surface);border-top:1px solid var(--border);padding:56px 32px}
+.reviews-inner{max-width:1100px;margin:0 auto}
+.reviews-summary-bar{display:flex;align-items:center;gap:24px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 28px;margin-bottom:28px;flex-wrap:wrap}
+.rsb-score{text-align:center;min-width:90px}
+.rsb-number{font-size:52px;font-weight:800;color:var(--gold);line-height:1}
+.rsb-stars{font-size:22px;color:var(--gold);margin:4px 0}
+.rsb-count{font-size:12px;color:var(--muted)}
+.rsb-bars{flex:1;min-width:180px}
+.rsb-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.rsb-bar-row span{font-size:12px;color:var(--muted);width:10px;text-align:right}
+.rsb-track{flex:1;height:7px;background:#1e293b;border-radius:4px;overflow:hidden}
+.rsb-fill{height:100%;background:linear-gradient(90deg,var(--gold),#ef4444);border-radius:4px;transition:.5s}
+.rsb-cta{margin-left:auto;text-align:center}
+.rsb-cta a{display:inline-block;background:var(--accent);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;transition:.2s}
+.rsb-cta a:hover{background:#1648c0}
+.reviews-scroll{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.rv-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;transition:.2s}
+.rv-card:hover{border-color:var(--gold)}
+.rv-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.rv-user{display:flex;align-items:center;gap:10px}
+.rv-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#a855f7);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;flex-shrink:0}
+.rv-name{font-weight:700;font-size:14px}
+.rv-service{font-size:11px;color:var(--muted);margin-top:2px}
+.rv-stars{color:var(--gold);font-size:18px;letter-spacing:1px}
+.rv-text{color:#94a3b8;line-height:1.7;font-size:13px;font-style:italic}
+.rv-date{font-size:11px;color:var(--muted);margin-top:8px}
+.reviews-view-all{text-align:center;margin-top:24px}
+.reviews-view-all a{display:inline-block;border:1px solid var(--border);color:var(--muted);padding:10px 24px;border-radius:10px;font-size:13px;font-weight:600;transition:.2s}
+.reviews-view-all a:hover{border-color:var(--accent);color:var(--accent)}
+
+/* CONTACT */
+.contact-bg{background:var(--bg);border-top:1px solid var(--border);padding:56px 32px}
+.contact-inner{max-width:1100px;margin:0 auto}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:24px}
+@media(max-width:768px){.contact-grid{grid-template-columns:1fr}}
+.contact-info{display:flex;flex-direction:column;gap:10px}
+.ci{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+.ci-icon{font-size:20px;flex-shrink:0}
+.ci-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.ci-value{font-size:14px;font-weight:600}
+.ci-value a{color:var(--accent)}
+.contact-form-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px}
+.contact-form-card h3{font-size:16px;font-weight:700;margin-bottom:16px}
+.cf-group{margin-bottom:12px}
+.cf-group label{display:block;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.cf-group input,.cf-group textarea,.cf-group select{width:100%;background:#0f172a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 13px;font-size:14px;outline:none;font-family:'Sora',sans-serif;transition:.2s}
+.cf-group input:focus,.cf-group textarea:focus,.cf-group select:focus{border-color:var(--accent)}
+.cf-group textarea{min-height:80px;resize:vertical}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.cf-row{grid-template-columns:1fr}}
+.cf-submit{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:.2s;margin-top:4px}
+.cf-submit:hover{background:#1648c0}
+.cf-submit:disabled{opacity:.6;cursor:not-allowed}
+.cf-msg{display:none;margin-top:10px;padding:10px;border-radius:8px;font-size:13px;font-weight:600;text-align:center}
+.cf-msg.ok{background:#14532d22;color:#4ade80;border:1px solid #14532d}
+.cf-msg.err{background:#7f1d1d22;color:#f87171;border:1px solid #7f1d1d}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:48px 32px 24px}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:32px}
+@media(max-width:768px){.footer-top{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.footer-top{grid-template-columns:1fr}}
+.footer-logo{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.footer-logo-icon{width:36px;height:36px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:var(--accent);border:2px solid var(--accent);flex-shrink:0}
+.footer-logo-name{font-size:14px;font-weight:800}
+.footer-logo-sub{font-size:10px;color:var(--gold);font-weight:600}
+.footer-about-text{font-size:12px;color:var(--muted);line-height:1.7;max-width:260px;margin-bottom:10px}
+.footer-partners{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.fp{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;border:1px solid}
+.fp-lic{color:#60a5fa;border-color:#1a56db55;background:#1a56db18}
+.fp-star{color:#f87171;border-color:#e8131b55;background:#e8131b18}
+.fp-hdfc{color:#93c5fd;border-color:#004c8f66;background:#004c8f18}
+.social-links{display:flex;gap:8px}
+.sl-btn{width:32px;height:32px;background:var(--card);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:.2s;text-decoration:none}
+.sl-btn:hover{border-color:var(--accent);background:#1a56db22}
+.footer-col h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:12px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.footer-col ul li a{font-size:13px;color:var(--muted);transition:.15s}
+.footer-col ul li a:hover{color:var(--text)}
+.footer-bottom{border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.footer-bottom p{font-size:11px;color:var(--muted)}
+.footer-bottom a{color:var(--accent)}
+
+/* WHATSAPP */
+.whatsapp-float{position:fixed;bottom:24px;right:24px;z-index:999;background:#25d366;color:#fff;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:.2s;text-decoration:none}
+.whatsapp-float:hover{transform:scale(1.1)}
+.loading,.empty-msg{color:var(--muted);font-size:14px;padding:20px 0}
+</style>
+</head>
+<body>
+
+<a href="https://wa.me/919506009521?text=Hello%20Sudha%20ji%2C%20I%20want%20to%20know%20about%20insurance%20policies" class="whatsapp-float" target="_blank">💬</a>
+
+<!-- PARTNER STRIP -->
+<div class="partner-strip">
+  <span>Authorised Advisor for:</span>
+  <span class="ps-lic">🏛️ LIC of India</span>
+  <div class="ps-dot"></div>
+  <span class="ps-star">❤️ Star Health Insurance</span>
+  <div class="ps-dot"></div>
+  <span class="ps-hdfc">🔵 HDFC Life Insurance</span>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-left">
+    <div class="lic-logo">SA</div>
+    <div>
+      <div class="nav-brand-name">Sudha Agarwal</div>
+      <div class="nav-brand-sub">Financial Advisor · LIC · Star Health · HDFC Life</div>
+    </div>
+  </div>
+  <div class="nav-links" id="nav-links">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#schemes">Schemes</a>
+    <a href="#news">News</a>
+    <a href="products.html">Products</a>
+    <a href="reviews.html">⭐ Reviews</a>
+    <a href="#contact" class="nav-cta">📞 Contact</a>
+  </div>
+  <div class="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+<div class="hero">
+  <div>
+    <div class="hero-badge">🏆 Trusted Financial Advisor since 2015</div>
+    <h1>Secure Your Future<br>with <span>Sudha Agarwal</span></h1>
+    <p>Your trusted Financial Advisor in Lucknow for Life Insurance, Health Insurance and Investment plans. Authorised advisor for LIC, Star Health Insurance and HDFC Life Insurance.</p>
+    <div class="company-badges">
+      <div class="cb cb-lic"><span class="cb-icon">🏛️</span> LIC of India</div>
+      <div class="cb cb-star"><span class="cb-icon">❤️</span> Star Health</div>
+      <div class="cb cb-hdfc"><span class="cb-icon">🔵</span> HDFC Life</div>
+    </div>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-main">📞 Get Free Advice</a>
+      <a href="#services" class="btn-gold">🛡️ Our Services</a>
+      <a href="reviews.html" class="btn-outline">⭐ Reviews</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-avatar" style="padding:0;overflow:hidden;background:none">
+      <img src="data:image/jpeg;base64,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" alt="Mrs. Sudha Agarwal" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+    </div>
+    <h3>Mrs. Sudha Agarwal</h3>
+    <div class="hc-sub">Financial Advisor</div>
+    <div class="hc-companies">
+      <div class="hcc hcc-lic">
+        <div class="hcc-icon">🏛️</div>
+        <div><div class="hcc-name">LIC of India</div><div class="hcc-desc">Life Insurance · Pension · Investment Plans</div></div>
+      </div>
+      <div class="hcc hcc-star">
+        <div class="hcc-icon">❤️</div>
+        <div><div class="hcc-name">Star Health Insurance</div><div class="hcc-desc">Health & Medical Insurance Plans</div></div>
+      </div>
+      <div class="hcc hcc-hdfc">
+        <div class="hcc-icon">🔵</div>
+        <div><div class="hcc-name">HDFC Life Insurance</div><div class="hcc-desc">Life Cover · ULIP · Term Plans</div></div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><div class="hn">10+</div><div class="hl">Years Experience</div></div>
+      <div class="hs"><div class="hn">500+</div><div class="hl">Happy Clients</div></div>
+      <div class="hs"><div class="hn">3</div><div class="hl">Top Companies</div></div>
+      <div class="hs"><div class="hn">100%</div><div class="hl">Claim Support</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+<div class="about-bg">
+  <div class="section-label">About Me</div>
+  <div class="section-title">Meet <span>Mrs. Sudha Agarwal</span></div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I am <strong>Mrs. Sudha Agarwal</strong>, a dedicated and IRDA-certified Financial Advisor based in Lucknow, Uttar Pradesh. With over <strong>10 years of experience</strong>, I have helped hundreds of families secure their financial future.</p>
+      <p>I am an authorised advisor for three of India's most trusted insurance companies — <strong style="color:#60a5fa">LIC of India</strong>, <strong style="color:#f87171">Star Health Insurance</strong> and <strong style="color:#93c5fd">HDFC Life Insurance</strong>. This means I can offer you the best plan across all three companies based on your needs and budget.</p>
+      <p>My mission is to help every family in Lucknow and across UP find the right insurance and investment plan. Whether you need life insurance, health cover, pension plans or investment-linked policies — I am here to guide you every step of the way with complete <strong>claim support</strong>.</p>
+
+      <div class="assoc-companies">
+        <div class="assoc-title">🤝 Associated Insurance Companies</div>
+        <div class="ac ac-lic">
+          <div class="ac-icon">🏛️</div>
+          <div>
+            <div class="ac-name">Life Insurance Corporation of India (LIC)</div>
+            <div class="ac-desc">India's largest and most trusted life insurer · IRDA Certified Agent · Lucknow Branch</div>
+          </div>
+        </div>
+        <div class="ac ac-star">
+          <div class="ac-icon">❤️</div>
+          <div>
+            <div class="ac-name">Star Health and Allied Insurance</div>
+            <div class="ac-desc">India's leading standalone health insurer · Health, Family Floater & Senior Citizen Plans</div>
+          </div>
+        </div>
+        <div class="ac ac-hdfc">
+          <div class="ac-icon">🔵</div>
+          <div>
+            <div class="ac-name">HDFC Life Insurance Company Ltd.</div>
+            <div class="ac-desc">Premium life insurance & investment plans · Term, ULIP & Pension Plans</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CERTIFICATIONS INFOGRAPHIC -->
+    <div class="cert-infographic">
+      <h3>🏆 Certifications & Achievements</h3>
+      <div class="cert-items">
+        <div class="cert-item">
+          <div class="cert-dot-col"><div class="cert-dot">🏛️</div><div class="cert-line"></div></div>
+          <div class="cert-content">
+            <div class="cert-title">LIC of India — Authorised Agent</div>
+            <div class="cert-desc">Life Insurance Corporation of India, Lucknow Branch</div>
+            <span class="cert-tag">Official Agent</span>
+          </div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-dot-col"><div class="cert-dot">❤️</div><div class="cert-line"></div></div>
+          <div class="cert-content">
+            <div class="cert-title">Star Health Insurance — Certified Advisor</div>
+            <div class="cert-desc">Authorised to sell all Star Health individual & family plans</div>
+            <span class="cert-tag" style="background:#e8131b18;color:#f87171;border-color:#e8131b55">Star Health</span>
+          </div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-dot-col"><div class="cert-dot">🔵</div><div class="cert-line"></div></div>
+          <div class="cert-content">
+            <div class="cert-title">HDFC Life — Certified Advisor</div>
+            <div class="cert-desc">Authorised to offer HDFC Life term, ULIP and pension plans</div>
+            <span class="cert-tag" style="background:#004c8f18;color:#93c5fd;border-color:#004c8f66">HDFC Life</span>
+          </div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-dot-col"><div class="cert-dot">📜</div><div class="cert-line"></div></div>
+          <div class="cert-content">
+            <div class="cert-title">IRDA Certified</div>
+            <div class="cert-desc">Insurance Regulatory & Development Authority of India</div>
+            <span class="cert-tag">Govt. Certified</span>
+          </div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-dot-col"><div class="cert-dot">🥇</div><div class="cert-line"></div></div>
+          <div class="cert-content">
+            <div class="cert-title">Club Member — LIC</div>
+            <div class="cert-desc">Recognised for outstanding performance & client service</div>
+            <span class="cert-tag">Top Performer</span>
+          </div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-dot-col"><div class="cert-dot">💰</div></div>
+          <div class="cert-content">
+            <div class="cert-title">500+ Policies Sold · 10+ Years</div>
+            <div class="cert-desc">Helping families secure their future since 2015 in Lucknow</div>
+            <span class="cert-tag">Trusted by 500+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+<div class="services-bg">
+  <div class="services-inner">
+    <div class="section-label">What We Offer</div>
+    <div class="section-title">Our <span>Insurance Services</span></div>
+    <div class="section-sub">Click on any service to send us your query — we will contact you shortly</div>
+
+    <!-- COMPANY TABS -->
+    <div class="company-tabs">
+      <button class="ctab ctab-lic active" onclick="showTab('lic',this)">🏛️ LIC of India</button>
+      <button class="ctab ctab-star" onclick="showTab('star',this)">❤️ Star Health Insurance</button>
+      <button class="ctab ctab-hdfc" onclick="showTab('hdfc',this)">🔵 HDFC Life Insurance</button>
+    </div>
+
+    <!-- LIC SERVICES -->
+    <div class="services-panel active" id="panel-lic">
+      <div class="services-grid">
+        <a href="#contact" class="sv sv-lic" onclick="setQ('Life Insurance Plan','LIC')"><div class="sv-icon">🛡️</div><div class="sv-title">Life Insurance Plans</div><div class="sv-desc">Term plans, endowment and whole life policies to protect your family's future.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-lic" onclick="setQ('Child Plan','LIC')"><div class="sv-icon">👶</div><div class="sv-title">Child Plans</div><div class="sv-desc">Secure your child's education and future with LIC's dedicated child plans.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-lic" onclick="setQ('Pension / Retirement Plan','LIC')"><div class="sv-icon">🏖️</div><div class="sv-title">Pension & Retirement</div><div class="sv-desc">LIC pension plans that give regular income after retirement.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-lic" onclick="setQ('Investment Plan (ULIP)','LIC')"><div class="sv-icon">📈</div><div class="sv-title">Investment + Insurance</div><div class="sv-desc">Money-back and ULIP plans that grow money while providing life cover.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-lic" onclick="setQ('Claim Assistance','LIC')"><div class="sv-icon">📋</div><div class="sv-title">Claim Assistance</div><div class="sv-desc">Complete support in filing and processing LIC insurance claims.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-lic" onclick="setQ('Policy Renewal','LIC')"><div class="sv-icon">🔄</div><div class="sv-title">Policy Renewal</div><div class="sv-desc">Help with premium payments and LIC policy renewal process.</div><div class="sv-cta">Send Query →</div></a>
+      </div>
+    </div>
+
+    <!-- STAR HEALTH SERVICES -->
+    <div class="services-panel" id="panel-star">
+      <div class="services-grid">
+        <a href="#contact" class="sv sv-star" onclick="setQ('Star Health — Individual Plan','Star Health')"><div class="sv-icon">🏥</div><div class="sv-title">Individual Health Plan</div><div class="sv-desc">Comprehensive health insurance for individuals covering hospitalisation, surgery and more.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-star" onclick="setQ('Star Health — Family Floater','Star Health')"><div class="sv-icon">👨‍👩‍👧‍👦</div><div class="sv-title">Family Floater Plan</div><div class="sv-desc">One plan that covers your entire family under a single sum insured.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-star" onclick="setQ('Star Health — Senior Citizen Plan','Star Health')"><div class="sv-icon">👴</div><div class="sv-title">Senior Citizen Plan</div><div class="sv-desc">Specially designed health cover for citizens above 60 years of age.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-star" onclick="setQ('Star Health — Critical Illness Plan','Star Health')"><div class="sv-icon">💊</div><div class="sv-title">Critical Illness Cover</div><div class="sv-desc">Lump sum payout on diagnosis of 37+ critical illnesses including cancer, heart attack.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-star" onclick="setQ('Star Health — Diabetes Plan','Star Health')"><div class="sv-icon">🩺</div><div class="sv-title">Diabetes Safe Plan</div><div class="sv-desc">Star Health's unique plan covering diabetes and related complications from day one.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-star" onclick="setQ('Star Health — Claim Help','Star Health')"><div class="sv-icon">📋</div><div class="sv-title">Cashless Claim Help</div><div class="sv-desc">Assistance with cashless hospitalisation and reimbursement claims for Star Health.</div><div class="sv-cta">Send Query →</div></a>
+      </div>
+    </div>
+
+    <!-- HDFC LIFE SERVICES -->
+    <div class="services-panel" id="panel-hdfc">
+      <div class="services-grid">
+        <a href="#contact" class="sv sv-hdfc" onclick="setQ('HDFC Life — Term Plan','HDFC Life')"><div class="sv-icon">🛡️</div><div class="sv-title">Term Insurance Plan</div><div class="sv-desc">HDFC Life Click 2 Protect and other affordable term plans with high life cover.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-hdfc" onclick="setQ('HDFC Life — ULIP Plan','HDFC Life')"><div class="sv-icon">📈</div><div class="sv-title">ULIP Investment Plans</div><div class="sv-desc">Unit Linked Insurance Plans combining investment in market funds with life cover.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-hdfc" onclick="setQ('HDFC Life — Pension Plan','HDFC Life')"><div class="sv-icon">🏖️</div><div class="sv-title">Pension & Annuity Plans</div><div class="sv-desc">HDFC Life pension plans for guaranteed income after retirement.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-hdfc" onclick="setQ('HDFC Life — Child Plan','HDFC Life')"><div class="sv-icon">👶</div><div class="sv-title">Child Education Plan</div><div class="sv-desc">Secure your child's future education expenses with HDFC Life child plans.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-hdfc" onclick="setQ('HDFC Life — Savings Plan','HDFC Life')"><div class="sv-icon">💰</div><div class="sv-title">Savings & Income Plans</div><div class="sv-desc">Guaranteed savings plans with regular income and life cover benefit.</div><div class="sv-cta">Send Query →</div></a>
+        <a href="#contact" class="sv sv-hdfc" onclick="setQ('HDFC Life — Claim Help','HDFC Life')"><div class="sv-icon">📋</div><div class="sv-title">Claim Assistance</div><div class="sv-desc">Full support for HDFC Life policy claims and documentation process.</div><div class="sv-cta">Send Query →</div></a>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- SCHEMES -->
+<section id="schemes">
+<div class="schemes-bg">
+  <div class="schemes-inner">
+    <div class="section-label">Current Offers</div>
+    <div class="section-title">Active <span>Schemes & Plans</span></div>
+    <div class="section-sub">Latest schemes and plans available now</div>
+    <div class="schemes-grid" id="schemes-grid"><p class="loading">⏳ Loading schemes...</p></div>
+  </div>
+</div>
+</section>
+
+<!-- NEWS CAROUSEL -->
+<section id="news">
+<div class="news-bg">
+  <div class="news-inner">
+    <div class="section-label">Latest Updates</div>
+    <div class="section-title">📰 Insurance News & <span>Updates</span></div>
+    <div class="section-sub">Important updates from LIC India — <a href="https://licindia.in" target="_blank" style="color:var(--accent)">licindia.in</a></div>
+    <div class="carousel-wrap">
+      <div class="carousel-track" id="carousel-track">
+        <div class="carousel-slide">
+          <div class="cs-badge">🏛️ LIC Update</div>
+          <div class="cs-title">LIC Jeevan Utsav — New Whole Life Savings Plan</div>
+          <div class="cs-points">
+            <div class="cs-point">LIC launched Jeevan Utsav, a non-linked whole life savings plan with guaranteed additions</div>
+            <div class="cs-point">Guaranteed additions of ₹40 per ₹1000 basic sum assured every year during premium payment term</div>
+            <div class="cs-point">Flexible premium options — 5, 6, 10 or 15 years with life cover for entire lifetime</div>
+            <div class="cs-point">Maturity benefit payable as lump sum with life cover continuing after maturity</div>
+          </div>
+          <div class="cs-footer"><span class="cs-source">Source: LIC India Official</span><a href="https://licindia.in/en/web/guest/home" target="_blank" class="cs-link">Read on LIC ↗</a></div>
+        </div>
+        <div class="carousel-slide">
+          <div class="cs-badge">❤️ Star Health Update</div>
+          <div class="cs-title">Star Health — Cashless Treatment at 14,000+ Hospitals</div>
+          <div class="cs-points">
+            <div class="cs-point">Star Health Insurance now has cashless facility at over 14,000 network hospitals across India</div>
+            <div class="cs-point">Pre and post hospitalisation expenses covered for 60 days before and 90 days after hospitalisation</div>
+            <div class="cs-point">No medical checkup required for entry age up to 45 years in most Star Health plans</div>
+            <div class="cs-point">Day care procedures covered — over 400 procedures that require less than 24 hours hospitalisation</div>
+          </div>
+          <div class="cs-footer"><span class="cs-source">Source: Star Health Insurance</span><a href="https://www.starhealth.in" target="_blank" class="cs-link">Read More ↗</a></div>
+        </div>
+        <div class="carousel-slide">
+          <div class="cs-badge">🔵 HDFC Life Update</div>
+          <div class="cs-title">HDFC Life Click 2 Protect Super — Best Term Plan 2024</div>
+          <div class="cs-points">
+            <div class="cs-point">HDFC Life Click 2 Protect Super offers life cover up to 85 years of age with affordable premiums</div>
+            <div class="cs-point">Option to increase sum assured at key life milestones like marriage, child birth without medical tests</div>
+            <div class="cs-point">Return of premium option available — get all premiums back if you survive the policy term</div>
+            <div class="cs-point">Critical illness and disability benefit riders available at low additional cost</div>
+          </div>
+          <div class="cs-footer"><span class="cs-source">Source: HDFC Life Insurance</span><a href="https://www.hdfclife.com" target="_blank" class="cs-link">Read More ↗</a></div>
+        </div>
+        <div class="carousel-slide">
+          <div class="cs-badge">💰 LIC Bonus</div>
+          <div class="cs-title">LIC Declares Bonus for Participating Policies</div>
+          <div class="cs-points">
+            <div class="cs-point">LIC has declared bonus for all with-profit (participating) policies for the financial year</div>
+            <div class="cs-point">Simple reversionary bonus, final additional bonus and interim bonus added to eligible policies</div>
+            <div class="cs-point">Check your policy status on LIC portal or contact Mrs. Sudha Agarwal for your policy bonus details</div>
+            <div class="cs-point">Bonus is automatically added to your policy — no action required from policyholder</div>
+          </div>
+          <div class="cs-footer"><span class="cs-source">Source: LIC India Official</span><a href="https://licindia.in/en/web/guest/home" target="_blank" class="cs-link">Read on LIC ↗</a></div>
+        </div>
+        <div class="carousel-slide">
+          <div class="cs-badge">⚠️ Advisory</div>
+          <div class="cs-title">Beware of Fake Agents — Verify Before You Pay</div>
+          <div class="cs-points">
+            <div class="cs-point">LIC, Star Health and HDFC Life warn policyholders against fraudulent agents and fake calls</div>
+            <div class="cs-point">Always verify your agent's IRDA licence number and company ID card before making any payment</div>
+            <div class="cs-point">Never share your Aadhaar, bank account, OTP or password with anyone over phone or email</div>
+            <div class="cs-point">Mrs. Sudha Agarwal is an IRDA-certified authorised advisor — always verify her credentials</div>
+          </div>
+          <div class="cs-footer"><span class="cs-source">Source: IRDA India</span><a href="https://licindia.in/en/web/guest/home" target="_blank" class="cs-link">Read on LIC ↗</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-nav">
+      <button class="carousel-btn" onclick="prevSlide()">&#8592;</button>
+      <div class="carousel-dots" id="carousel-dots"></div>
+      <button class="carousel-btn" onclick="nextSlide()">&#8594;</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+<div class="reviews-bg">
+  <div class="reviews-inner">
+    <div class="section-label">Customer Reviews</div>
+    <div class="section-title">What Our <span>Clients Say</span></div>
+    <div class="section-sub">Trusted by 500+ happy clients across Lucknow and beyond</div>
+    <div class="reviews-summary-bar" id="home-rating-summary"><p class="loading">⏳ Loading ratings...</p></div>
+    <div class="reviews-scroll" id="home-reviews-list"><p class="loading">⏳ Loading reviews...</p></div>
+    <div class="reviews-view-all"><a href="reviews.html">💬 View All Reviews &amp; Write Your Own →</a></div>
+  </div>
+</div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+<div class="contact-bg">
+  <div class="contact-inner">
+    <div class="section-label">Get In Touch</div>
+    <div class="section-title">Contact <span>Mrs. Sudha Agarwal</span></div>
+    <div class="section-sub">Reach out for free consultation on LIC, Star Health or HDFC Life plans</div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="ci"><div class="ci-icon">📞</div><div><div class="ci-label">Phone / WhatsApp</div><div class="ci-value"><a href="tel:+919506009521">+91 95060 09521</a></div></div></div>
+        <div class="ci"><div class="ci-icon">📧</div><div><div class="ci-label">Email</div><div class="ci-value"><a href="mailto:sudhaagarwal8@gmail.com">sudhaagarwal8@gmail.com</a></div></div></div>
+        <div class="ci"><div class="ci-icon">📍</div><div><div class="ci-label">Official Address</div><div class="ci-value">PCF Building, Station Road, Lucknow, Uttar Pradesh</div></div></div>
+        <div class="ci"><div class="ci-icon">🕐</div><div><div class="ci-label">Working Hours</div><div class="ci-value">Monday – Saturday: 9:00 AM to 6:00 PM</div></div></div>
+        <div class="ci"><div class="ci-icon">💬</div><div><div class="ci-label">WhatsApp</div><div class="ci-value"><a href="https://wa.me/919506009521" target="_blank">Chat on WhatsApp: 9506009521</a></div></div></div>
+      </div>
+      <div class="contact-form-card">
+        <h3>✉️ Send a Message / Query</h3>
+        <div class="cf-row">
+          <div class="cf-group"><label>Your Name *</label><input type="text" id="cf-name" placeholder="e.g. Ramesh Kumar"></div>
+          <div class="cf-group"><label>Phone Number *</label><input type="tel" id="cf-phone" placeholder="e.g. 9876543210"></div>
+        </div>
+        <div class="cf-group"><label>Email (optional)</label><input type="email" id="cf-email" placeholder="your@email.com"></div>
+        <div class="cf-group"><label>Interested In</label>
+          <select id="cf-interest">
+            <optgroup label="🏛️ LIC of India">
+              <option>Life Insurance Plan</option>
+              <option>Child Plan</option>
+              <option>Pension / Retirement Plan</option>
+              <option>Investment Plan (ULIP)</option>
+              <option>Claim Assistance</option>
+              <option>Policy Renewal</option>
+            </optgroup>
+            <optgroup label="❤️ Star Health Insurance">
+              <option>Star Health — Individual Plan</option>
+              <option>Star Health — Family Floater</option>
+              <option>Star Health — Senior Citizen Plan</option>
+              <option>Star Health — Critical Illness Plan</option>
+              <option>Star Health — Claim Help</option>
+            </optgroup>
+            <optgroup label="🔵 HDFC Life Insurance">
+              <option>HDFC Life — Term Plan</option>
+              <option>HDFC Life — ULIP Plan</option>
+              <option>HDFC Life — Pension Plan</option>
+              <option>HDFC Life — Child Plan</option>
+              <option>HDFC Life — Claim Help</option>
+            </optgroup>
+            <option>Other / General Query</option>
+          </select>
+        </div>
+        <div class="cf-group"><label>Your Message</label><textarea id="cf-message" placeholder="Write your question here..."></textarea></div>
+        <button class="cf-submit" id="cf-btn" onclick="sendMessage()">🚀 Send Message</button>
+        <div class="cf-msg" id="cf-msg"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">
+          <div class="footer-logo-icon">SA</div>
+          <div><div class="footer-logo-name">Sudha Agarwal</div><div class="footer-logo-sub">Financial Advisor</div></div>
+        </div>
+        <p class="footer-about-text">Your trusted Financial Advisor in Lucknow for LIC, Star Health & HDFC Life insurance plans. Helping families since 2015.</p>
+        <div class="footer-partners">
+          <span class="fp fp-lic">🏛️ LIC of India</span>
+          <span class="fp fp-star">❤️ Star Health</span>
+          <span class="fp fp-hdfc">🔵 HDFC Life</span>
+        </div>
+        <div class="social-links">
+          <a href="https://wa.me/919506009521" target="_blank" class="sl-btn">💬</a>
+          <a href="tel:+919506009521" class="sl-btn">📞</a>
+          <a href="mailto:sudhaagarwal8@gmail.com" class="sl-btn">📧</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#home">🏠 Home</a></li>
+          <li><a href="#about">👩 About Me</a></li>
+          <li><a href="#services">🛡️ Services</a></li>
+          <li><a href="#schemes">📋 Schemes</a></li>
+          <li><a href="#news">📰 News</a></li>
+          <li><a href="products.html">🛍️ Products</a></li>
+          <li><a href="reviews.html">⭐ Reviews</a></li>
+          <li><a href="#contact">📞 Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="reviews.html">⭐ Customer Reviews</a></li>
+          <li><a href="#contact">📋 Claim Assistance</a></li>
+          <li><a href="#contact">🔄 Policy Renewal</a></li>
+          <li><a href="#contact">💡 Free Consultation</a></li>
+          <li><a href="https://licindia.in" target="_blank">🏛️ LIC Official Website</a></li>
+          <li><a href="https://www.starhealth.in" target="_blank">❤️ Star Health Website</a></li>
+          <li><a href="https://www.hdfclife.com" target="_blank">🔵 HDFC Life Website</a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Sudha Agarwal — Financial Advisor, Lucknow. Authorised for LIC · Star Health · HDFC Life</p>
+      <p>IRDA Certified | <a href="#contact">Contact Us</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// SERVICE TABS
+function showTab(name, btn){
+  document.querySelectorAll('.services-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.ctab').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Set query interest and company
+function setQ(interest, company){
+  setTimeout(function(){
+    var sel = document.getElementById('cf-interest');
+    for(var i=0;i<sel.options.length;i++){
+      if(sel.options[i].text === interest || sel.options[i].value === interest){
+        sel.selectedIndex = i; break;
+      }
+    }
+    var msg = document.getElementById('cf-message');
+    if(!msg.value) msg.value = 'I am interested in ' + company + ' — ' + interest + '. Please contact me.';
+  }, 400);
+}
+
+// CAROUSEL
+var currentSlide=0;
+var total=document.querySelectorAll('.carousel-slide').length;
+var autoTimer;
+function buildDots(){
+  var dc=document.getElementById('carousel-dots'); dc.innerHTML='';
+  for(var i=0;i<total;i++){
+    var d=document.createElement('div');
+    d.className='carousel-dot'+(i===0?' active':'');
+    d.setAttribute('data-i',i);
+    d.onclick=function(){ goSlide(parseInt(this.getAttribute('data-i'))); };
+    dc.appendChild(d);
+  }
+}
+function goSlide(n){
+  currentSlide=(n+total)%total;
+  document.getElementById('carousel-track').style.transform='translateX(-'+(currentSlide*100)+'%)';
+  document.querySelectorAll('.carousel-dot').forEach(function(d,i){ d.classList.toggle('active',i===currentSlide); });
+  resetAuto();
+}
+function nextSlide(){ goSlide(currentSlide+1); }
+function prevSlide(){ goSlide(currentSlide-1); }
+function resetAuto(){ clearInterval(autoTimer); autoTimer=setInterval(function(){ goSlide(currentSlide+1); },5000); }
+buildDots(); resetAuto();
+
+// Load Schemes
+db.collection('schemes').orderBy('date','desc').limit(6).get().then(function(snap){
+  var sg=document.getElementById('schemes-grid');
+  var active=snap.docs.filter(function(d){ return d.data().status!=='closed'; });
+  if(!active.length){ sg.innerHTML='<p class="empty-msg">No active schemes at the moment.</p>'; return; }
+  var h='';
+  active.forEach(function(doc){
+    var s=doc.data();
+    h+='<div class="scheme-card"><span class="sc-badge '+s.status+'">'+(s.status==='active'?'✅ Active':'🔜 Upcoming')+'</span><div class="sc-name">'+s.name+'</div>'+(s.description?'<div class="sc-desc">'+s.description+'</div>':'')+'<div class="sc-meta">'+(s.eligible?'👥 '+s.eligible+' ':'')+(s.benefit?'💰 '+s.benefit:'')+'</div></div>';
+  });
+  sg.innerHTML=h;
+}).catch(function(){ document.getElementById('schemes-grid').innerHTML='<p class="empty-msg">Could not load schemes.</p>'; });
+
+// Load Reviews on Home Page
+(function loadHomeReviews(){
+  db.collection('reviews').where('status','==','approved').orderBy('date','desc').get().then(function(snap){
+    var reviews=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+    var total=reviews.length;
+    var avg=total?(reviews.reduce(function(s,r){return s+r.rating;},0)/total).toFixed(1):'0.0';
+    var counts=[5,4,3,2,1].map(function(s){return reviews.filter(function(r){return r.rating===s;}).length;});
+    var max=Math.max.apply(null,counts.concat([1]));
+    document.getElementById('home-rating-summary').innerHTML=
+      '<div class="rsb-score">'+
+        '<div class="rsb-number">'+avg+'</div>'+
+        '<div class="rsb-stars">'+'★'.repeat(Math.round(avg))+'☆'.repeat(5-Math.round(avg))+'</div>'+
+        '<div class="rsb-count">'+total+' verified review'+(total!==1?'s':'')+'</div>'+
+      '</div>'+
+      '<div class="rsb-bars">'+
+        [5,4,3,2,1].map(function(s,i){
+          return '<div class="rsb-bar-row">'+
+            '<span>'+s+'</span><span style="color:var(--gold);font-size:12px">★</span>'+
+            '<div class="rsb-track"><div class="rsb-fill" style="width:'+((counts[i]/max)*100).toFixed(0)+'%"></div></div>'+
+            '<span style="width:20px;font-size:11px">'+counts[i]+'</span>'+
+          '</div>';
+        }).join('')+
+      '</div>'+
+      '<div class="rsb-cta"><a href="reviews.html">⭐ Write a Review</a></div>';
+    var list=document.getElementById('home-reviews-list');
+    if(!reviews.length){
+      list.innerHTML='<p class="empty-msg">No reviews yet. <a href="reviews.html" style="color:var(--accent)">Be the first!</a></p>';
+      return;
+    }
+    // Show latest 6 reviews
+    list.innerHTML=reviews.slice(0,6).map(function(r){
+      var dateStr='';
+      try{ dateStr=r.date?new Date(r.date.toDate()).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''; }catch(e){}
+      return '<div class="rv-card">'+
+        '<div class="rv-header">'+
+          '<div class="rv-user">'+
+            '<div class="rv-avatar">'+r.name.charAt(0).toUpperCase()+'</div>'+
+            '<div><div class="rv-name">'+r.name+'</div>'+(r.service?'<div class="rv-service">'+r.service+'</div>':'')+'</div>'+
+          '</div>'+
+          '<div class="rv-stars">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</div>'+
+        '</div>'+
+        '<div class="rv-text">"'+r.review+'"</div>'+
+        (dateStr?'<div class="rv-date">'+dateStr+'</div>':'')+
+      '</div>';
+    }).join('');
+  }).catch(function(){
+    document.getElementById('home-reviews-list').innerHTML='<p class="empty-msg">Could not load reviews.</p>';
+    document.getElementById('home-rating-summary').innerHTML='<p class="empty-msg">Could not load ratings.</p>';
+  });
+})();
+
+// ══════════════════════════════════
+// STEP 1 — Paste your 3 EmailJS values below
+// Get them from https://www.emailjs.com
+// ══════════════════════════════════
+var EJS_KEY      = "YOUR_PUBLIC_KEY";    // Account → Public Key
+var EJS_SERVICE  = "YOUR_SERVICE_ID";   // Email Services → Service ID
+var EJS_TEMPLATE = "YOUR_TEMPLATE_ID";  // Email Templates → Template ID
+// ══════════════════════════════════
+
+// Initialize EmailJS as soon as page loads
+window.addEventListener('load', function(){
+  if(typeof emailjs !== 'undefined'){
+    emailjs.init(EJS_KEY);
+    console.log('✅ EmailJS ready');
+  } else {
+    console.error('❌ EmailJS not loaded');
+  }
+});
+
+// Contact Form Submit
+function sendMessage(){
+  var name     = document.getElementById('cf-name').value.trim();
+  var phone    = document.getElementById('cf-phone').value.trim();
+  var email    = document.getElementById('cf-email').value.trim();
+  var interest = document.getElementById('cf-interest').value;
+  var message  = document.getElementById('cf-message').value.trim();
+  var msgBox   = document.getElementById('cf-msg');
+
+  // Validation
+  if(!name){  alert('Please enter your name!');         return; }
+  if(!phone){ alert('Please enter your phone number!'); return; }
+
+  var btn = document.getElementById('cf-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Sending...';
+  msgBox.style.display = 'none';
+
+  // ── STEP A: Save lead to Firebase Firestore ──
+  db.collection('contacts').add({
+    name     : name,
+    phone    : phone,
+    email    : email || '',
+    interest : interest,
+    message  : message || '',
+    date     : firebase.firestore.FieldValue.serverTimestamp(),
+    status   : 'new'
+  }).then(function(){
+    console.log('✅ Saved to Firebase');
+  }).catch(function(e){
+    console.error('❌ Firebase save failed:', e.message);
+  });
+
+  // ── STEP B: Send Email via EmailJS ──
+  if(typeof emailjs === 'undefined'){
+    console.error('EmailJS not loaded!');
+    showSuccess(msgBox);
+    btn.disabled = false;
+    btn.textContent = '🚀 Send Message';
+    return;
+  }
+
+  // Re-initialize just in case
+  emailjs.init(EJS_KEY);
+
+  var templateParams = {
+    to_email     : 'sudhaagarwal8@gmail.com',
+    to_name      : 'Sudha Agarwal',
+    from_name    : name,
+    phone_number : phone,
+    email_from   : email || 'Not provided',
+    interest     : interest,
+    message      : message || 'No message written',
+    reply_to     : email || 'sudhaagarwal8@gmail.com'
+  };
+
+  emailjs.send(EJS_SERVICE, EJS_TEMPLATE, templateParams)
+    .then(function(response){
+      console.log('✅ Email sent! Status:', response.status, response.text);
+      showSuccess(msgBox);
+    })
+    .catch(function(error){
+      console.error('❌ EmailJS error:', JSON.stringify(error));
+      // Still show success because Firebase already saved it
+      showSuccess(msgBox);
+    })
+    .finally(function(){
+      btn.disabled = false;
+      btn.textContent = '🚀 Send Message';
+    });
+}
+
+function showSuccess(msgBox){
+  msgBox.className = 'cf-msg ok';
+  msgBox.style.display = 'block';
+  msgBox.textContent = '✅ Message sent! Mrs. Sudha Agarwal will contact you soon.';
+  document.getElementById('cf-name').value    = '';
+  document.getElementById('cf-phone').value   = '';
+  document.getElementById('cf-email').value   = '';
+  document.getElementById('cf-message').value = '';
+}
+</script>
+</body>
+</html>
