@@ -808,8 +808,14 @@ db.collection('schemes').orderBy('date','desc').limit(6).get().then(function(sna
 
 // Load Reviews on Home Page
 (function loadHomeReviews(){
-  db.collection('reviews').where('status','==','approved').orderBy('date','desc').get().then(function(snap){
-    var reviews=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+  db.collection('reviews').get().then(function(snap){
+    var reviews=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());})
+      .filter(function(r){return r.status==='approved';})
+      .sort(function(a,b){
+        var ta=a.date&&a.date.toDate?a.date.toDate().getTime():0;
+        var tb=b.date&&b.date.toDate?b.date.toDate().getTime():0;
+        return tb-ta;
+      });
     var total=reviews.length;
     var avg=total?(reviews.reduce(function(s,r){return s+r.rating;},0)/total).toFixed(1):'0.0';
     var counts=[5,4,3,2,1].map(function(s){return reviews.filter(function(r){return r.rating===s;}).length;});
@@ -851,9 +857,11 @@ db.collection('schemes').orderBy('date','desc').limit(6).get().then(function(sna
         (dateStr?'<div class="rv-date">'+dateStr+'</div>':'')+
       '</div>';
     }).join('');
-  }).catch(function(){
-    document.getElementById('home-reviews-list').innerHTML='<p class="empty-msg">Could not load reviews.</p>';
-    document.getElementById('home-rating-summary').innerHTML='<p class="empty-msg">Could not load ratings.</p>';
+  }).catch(function(err){
+    var msg = err ? err.message : 'Unknown error';
+    console.error('Reviews load error:', err);
+    document.getElementById('home-reviews-list').innerHTML='<p class="empty-msg" style="color:#f87171">❌ '+msg+'</p>';
+    document.getElementById('home-rating-summary').innerHTML='<p style="padding:16px;color:#f87171">❌ '+msg+'</p>';
   });
 })();
 
