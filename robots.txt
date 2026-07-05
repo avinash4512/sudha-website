@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://avinash4512.github.io/sudha-website/sitemap.xml
